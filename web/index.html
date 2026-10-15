@@ -1,6 +1,123 @@
 <!doctype html>
-<html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raíz NL</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font:18px system-ui,sans-serif;background:#f4f7f2;color:#1d2b22;padding:16px;text-align:center}</style></head>
-<body><main><h1>Raíz NL</h1><p>Dona un árbol donde más rinde: para el agua o para el aire de Monterrey.</p><p>Portal en construcción · Grok Monterrey Build Day</p></main></body>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raíz NL</title>
+  <meta name="description" content="Dona un árbol donde más ayuda: agua para las presas o aire para la zona metropolitana de Monterrey.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">🌳</span>
+      <span class="brand-name">Raíz NL</span>
+      <span id="mock-badge" class="badge" hidden>datos de ejemplo</span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button class="tab" role="tab" id="tab-donar" aria-selected="true" aria-controls="panel-donar">Donar</button>
+      <button class="tab" role="tab" id="tab-tablero" aria-selected="false" aria-controls="panel-tablero">Tablero</button>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <section id="panel-donar" role="tabpanel" aria-labelledby="tab-donar">
+        <div class="objetivo-switch" role="group" aria-label="Objetivo del árbol" hidden id="objetivo-switch">
+          <button class="seg" data-objetivo="agua" aria-pressed="false">💧 Agua</button>
+          <button class="seg" data-objetivo="aire" aria-pressed="false">🌬️ Aire</button>
+        </div>
+
+        <div id="vista-intro" class="intro-panel">
+          <h1>Tu árbol, donde más ayuda</h1>
+          <p>Elige en el mapa para qué quieres que sirva tu árbol. Te mostramos las zonas que priorizamos con datos abiertos de incendios, cuencas, presas y calidad del aire.</p>
+        </div>
+
+        <div id="vista-lista" hidden>
+          <p id="lista-nota" class="nota"></p>
+          <ol id="lista-zonas" class="lista-zonas"></ol>
+        </div>
+
+        <div id="vista-zona" hidden>
+          <button class="link-btn" id="btn-volver">← Ver todas las zonas</button>
+          <article id="zona-card" class="zona-card" aria-live="polite"></article>
+        </div>
+      </section>
+
+      <section id="panel-tablero" role="tabpanel" aria-labelledby="tab-tablero" hidden>
+        <h2>Tablero</h2>
+        <div class="kpis" id="kpis"></div>
+        <h3>Compromisos en este navegador</h3>
+        <div class="kpis" id="kpis-donaciones"></div>
+        <p class="nota">Prototipo: los compromisos se guardan solo en tu navegador. No hay pagos.</p>
+        <h3>Capas de contexto</h3>
+        <fieldset class="capas">
+          <legend class="sr">Capas de contexto</legend>
+          <label><input type="checkbox" data-capa="incendios"> Incendios forestales</label>
+          <label><input type="checkbox" data-capa="presas" checked> Presas (% de llenado)</label>
+          <label><input type="checkbox" data-capa="estaciones"> Estaciones SIMA (PM10)</label>
+          <label><input type="checkbox" data-capa="cuencas"> Cuencas hacia las presas</label>
+        </fieldset>
+        <h3>Fuentes de datos</h3>
+        <ul class="fuentes" id="fuentes"></ul>
+        <p class="nota" id="generado"></p>
+      </section>
+    </aside>
+
+    <div class="map-wrap">
+      <div id="map" aria-label="Mapa de zonas priorizadas"></div>
+
+      <div id="hero" class="hero">
+        <div class="hero-card">
+          <h1>¿Para qué quieres que sirva tu árbol?</h1>
+          <div class="hero-options">
+            <button class="hero-btn agua" data-objetivo="agua">
+              <span class="hero-emoji" aria-hidden="true">💧</span>
+              <span class="hero-title">Agua</span>
+              <span class="hero-desc">Reforestar cicatrices de incendio en la sierra que alimenta las presas y los acuíferos.</span>
+            </button>
+            <button class="hero-btn aire" data-objetivo="aire">
+              <span class="hero-emoji" aria-hidden="true">🌬️</span>
+              <span class="hero-title">Aire</span>
+              <span class="hero-desc">Plantar donde la zona metropolitana respira peor y casi no hay árboles.</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <dialog id="dlg-donar" class="dlg" aria-labelledby="dlg-titulo">
+    <form id="form-donar" method="dialog">
+      <h2 id="dlg-titulo">Donar un árbol</h2>
+      <p id="dlg-zona" class="nota"></p>
+      <label class="campo">Nombre (opcional)
+        <input type="text" name="nombre" maxlength="60" autocomplete="name">
+      </label>
+      <label class="campo">Usuario de X (opcional)
+        <span class="input-prefijo"><span aria-hidden="true">@</span><input type="text" name="usuario" maxlength="16" autocomplete="off" pattern="@?[A-Za-z0-9_]{1,15}" inputmode="text"></span>
+      </label>
+      <label class="check">
+        <input type="checkbox" name="etiquetar" disabled> Etiquétame en la publicación
+      </label>
+      <div class="dlg-acciones">
+        <button type="button" class="btn-sec" id="btn-cancelar">Cancelar</button>
+        <button type="submit" class="btn-pri" id="btn-confirmar">Confirmar donación</button>
+      </div>
+    </form>
+    <div id="dlg-gracias" hidden>
+      <h2>¡Gracias! 🌳</h2>
+      <p id="gracias-texto"></p>
+      <p class="nota">Prototipo: registramos tu compromiso, todavía no hay cobro. Publicar en X abre tu cuenta; tú decides si lo publicas.</p>
+      <div class="dlg-acciones">
+        <button type="button" class="btn-sec" id="btn-cerrar">Cerrar</button>
+        <a class="btn-pri" id="btn-x" href="#" target="_blank" rel="noopener">Publicar en X</a>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>

@@ -246,16 +246,45 @@
       <label class="check" id="campo-publicar" hidden>
         <input type="checkbox" name="publicar"> Autorizo que la cuenta de Raíz NL publique este texto
       </label>
+      <fieldset class="pago-demo">
+        <legend>Pago <span class="chip-demo">DEMO</span></legend>
+        <p class="nota">Simulación: no hay cobro. No escribas una tarjeta real; usa «Llenar con ejemplo».</p>
+        <label class="campo">Correo
+          <input type="email" name="correo" maxlength="80" autocomplete="off" placeholder="tu@correo.com">
+        </label>
+        <label class="campo">Tarjeta
+          <input type="text" name="tarjeta" readonly tabindex="-1" autocomplete="off" placeholder="4242 4242 4242 4242">
+        </label>
+        <div class="fila-2">
+          <label class="campo">Vence <input type="text" name="vence" readonly tabindex="-1" autocomplete="off" placeholder="MM/AA"></label>
+          <label class="campo">CVC <input type="text" name="cvc" readonly tabindex="-1" autocomplete="off" placeholder="123"></label>
+        </div>
+        <p class="total">Total: <b id="pago-total">$150 MXN</b> <span class="nota">($150 por árbol, precio de ejemplo)</span></p>
+        <button type="button" class="btn-sec btn-ancho" id="btn-ejemplo">✨ Llenar con ejemplo</button>
+      </fieldset>
       <p id="dlg-error" class="aviso" role="alert" hidden></p>
       <div class="dlg-acciones">
         <button type="button" class="btn-sec" id="btn-cancelar">Cancelar</button>
-        <button type="submit" class="btn-pri" id="btn-confirmar">Confirmar donación</button>
+        <button type="submit" class="btn-pri" id="btn-confirmar">Pagar (demo)</button>
       </div>
     </form>
+    <div id="dlg-pagando" class="pagando" hidden aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <p id="pagando-texto">Procesando pago…</p>
+    </div>
     <div id="dlg-gracias" hidden>
       <h2>¡Gracias! 🌳</h2>
       <p id="gracias-texto"></p>
-      <p class="nota">Ya eres parte de #RaízNL. Prototipo: registramos tu donación simbólica, todavía no hay cobro. «Publicar en X» abre tu cuenta con el mismo texto; tú decides si lo publicas.</p>
+      <div class="diploma" id="diploma">
+        <p class="diploma-sup">Certificado de árbol · #RaízNL</p>
+        <p class="diploma-nombre" id="diploma-nombre"></p>
+        <p>Tu árbol va a estar plantado en estas coordenadas:</p>
+        <p class="diploma-coords" id="diploma-coords"></p>
+        <canvas id="diploma-mapa" width="640" height="360" aria-label="Mapa del punto de plantación"></canvas>
+        <p class="nota" id="diploma-zona"></p>
+      </div>
+      <button type="button" class="btn-pri btn-ancho" id="btn-pdf">⬇️ Descargar diploma (PDF)</button>
+      <p class="nota">Ya eres parte de #RaízNL. Demo: el pago es simulado y no hubo cobro. «Publicar en X» abre tu cuenta con el mismo texto; tú decides si lo publicas.</p>
       <div class="dlg-acciones">
         <button type="button" class="btn-sec" id="btn-cerrar">Cerrar</button>
         <a class="btn-pri" id="btn-x" href="#" target="_blank" rel="noopener">Publicar en X</a>
@@ -267,5 +296,7 @@
   <script src="app.js"></script>
   <script src="landing.js"></script>
   <script src="chat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="checkout.js"></script>
 </body>
 </html>

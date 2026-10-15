@@ -398,6 +398,7 @@
     $('#dlg-error').hidden = true;
     $('#btn-confirmar').disabled = false;
     $('#campo-publicar').hidden = !state.apiOk;
+    if (window.RaizCheckout) window.RaizCheckout.abrir(f);
     actualizarVistaPrevia();
     if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
     form.nombre.focus();
@@ -431,6 +432,8 @@
     const arboles = normArboles(form.arboles.value);
     let texto = textoX(zonaDonacion, usuario, etiquetar, arboles);
     let estadoPost = '';
+    $('#btn-confirmar').disabled = true;
+    if (window.RaizCheckout) await window.RaizCheckout.pagar();
     if (state.apiOk) {
       $('#btn-confirmar').disabled = true;
       try {
@@ -448,11 +451,13 @@
           : 'No se pudo registrar la donación: ' + err.message;
         $('#dlg-error').hidden = false;
         $('#btn-confirmar').disabled = false;
+        if (window.RaizCheckout) window.RaizCheckout.cancelarPago();
         return;
       }
     }
+    const idCompromiso = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     guardarCompromiso({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      id: idCompromiso,
       zona: p.id, objetivo: p.objetivo, municipio: p.municipio,
       fecha: new Date().toISOString(),
       nombre: form.nombre.value.trim() || null,
@@ -470,7 +475,9 @@
       (estadoPost ? ' ' + estadoPost : '');
     $('#gracias-texto').textContent = gracias.charAt(0).toUpperCase() + gracias.slice(1);
     form.hidden = true;
+    $('#dlg-pagando').hidden = true;
     $('#dlg-gracias').hidden = false;
+    if (window.RaizCheckout) window.RaizCheckout.diploma(zonaDonacion, { id: idCompromiso, nombre: quien, arboles });
     if (state.zonaSel === p.id) pintarTarjeta(zonaDonacion);
     pintarTablero();
   });

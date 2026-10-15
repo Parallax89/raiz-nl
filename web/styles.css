@@ -358,6 +358,34 @@ section[id], main[id] { scroll-margin-top: 16px; }
 .texto-x { margin: 6px 0 0; padding: 10px 12px; border: 1px solid var(--gray-2); border-radius: 6px;
   font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.45; background: var(--gray-1); white-space: pre-wrap; }
 
+/* Pago simulado + diploma (checkout.js) */
+.pago-demo { border: 1px dashed var(--gray-4); border-radius: var(--radius); padding: 4px 14px 14px; margin: 16px 0 0; }
+.pago-demo legend { font-weight: 900; color: var(--spruce); text-transform: uppercase; padding: 0 6px; }
+.chip-demo { background: var(--sunset); color: var(--white); font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+.pago-demo input[readonly] { background: var(--gray-1); }
+.fila-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fila-2 .campo { margin: 0; }
+.total { margin: 12px 0; font-size: 15px; }
+.total b { color: var(--spruce); font-size: 18px; }
+.tecleando { outline: 2px solid var(--fern); outline-offset: 1px; }
+
+.pagando { display: grid; place-items: center; gap: 14px; padding: 48px 8px; text-align: center; }
+.pagando p { margin: 0; font-weight: 700; color: var(--spruce); }
+.spinner { width: 56px; height: 56px; border-radius: 50%; border: 6px solid var(--gray-2); border-top-color: var(--fern); animation: girar 0.8s linear infinite; }
+.pagando.ok .spinner { animation: none; border-color: var(--fern); background: var(--fern); position: relative; }
+.pagando.ok .spinner::after { content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--white); font-size: 28px; font-weight: 900; }
+@keyframes girar { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+
+.dlg:has(#dlg-gracias:not([hidden])) { width: min(560px, calc(100vw - 32px)); }
+.diploma { border: 3px solid var(--spruce); outline: 1px solid var(--fern); outline-offset: -8px; border-radius: 6px; padding: 18px; margin: 12px 0; text-align: center; }
+.diploma p { margin: 4px 0; }
+.diploma-sup { color: var(--sunset); font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 0.06em; }
+.diploma-nombre { font-weight: 900; font-size: 22px; color: var(--spruce); }
+.diploma-coords { font-weight: 900; font-size: 18px; color: var(--spruce); font-variant-numeric: tabular-nums; }
+#diploma-mapa { width: 100%; height: auto; border-radius: 4px; margin: 8px 0 4px; display: block; background: var(--gray-1); }
+#btn-pdf { margin-top: 4px; }
+
 /* Tira deslizante "La gente que ha donado" (hero) */
 .donadores { margin: 36px auto 0; max-width: 1100px; }
 .donadores-titulo { margin: 0 0 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }

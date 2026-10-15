@@ -31,7 +31,7 @@ SALIDA.mkdir(exist_ok=True)
 WFS = ("https://geosinav30.conagua.gob.mx:8080/geoserver/Sina/ows?service=WFS&version=2.0.0"
        "&request=GetFeature&outputFormat=application/json")
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 Chrome/126 Safari/537.36"}
-HOY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+HOY = datetime.now().astimezone().strftime("%Y-%m-%d")
 
 CELDA = 0.02                      # ~2.2 km
 CAJA = (24.3, 26.0, -100.95, -99.35)   # lat_min, lat_max, lon_min, lon_max
@@ -48,6 +48,11 @@ def fuera_de_sierra(c):
 SEPARACION_KM = 8                 # distancia mínima entre zonas de la lista corta
 N_AGUA, N_AIRE_COLONIAS = 8, 3
 CUENCAS_PRESA = {"2433": "El Cuchillo", "2531": "Cerro Prieto", "2532": "Cerro Prieto"}
+LA_BOCA = (-100.128056, 25.428056)   # cortina de la presa Rodrigo Gómez (catálogo de presas de CONAGUA)
+BOSQUE = ("bosque", "pino", "encino", "oyamel", "táscate", "tascate")   # sólo se reforesta donde hubo bosque
+ELEV_MIN_SIN_REGISTRO = 1000      # m; celdas sólo con satélite (sin tipo de vegetación) deben estar en la franja de bosque
+# Verdor en la temporada seca de 2026 (NDVI de Sentinel-2): supuestos de corte
+NDVI_ALTO, NDVI_BAJO = 0.55, 0.35
 ACUIFEROS_ZMM = {"1906", "1907", "1908", "1909", "1910", "1911"}   # campos de pozos que surten a la ZMM
 ESTACIONES_RETO3 = ["Pesqueria", "Cadereyta", "Juárez", "Santa Catarina", "García"]
 LUGARES = {
@@ -185,6 +190,9 @@ def agua():
             cuencas_presa.setdefault(CUENCAS_PRESA[clave], []).append(
                 (geom_wgs(f["geometry"]), texto(f["properties"]["cuenca"])))
     cuencas_presa = {p: (unary_union([g for g, _ in v]), " y ".join(n for _, n in v)) for p, v in cuencas_presa.items()}
+    from cuenca_presa import cuenca
+    # La Boca primero: está aguas arriba de El Cuchillo, dentro de «Río San Juan 1»
+    cuencas_presa = {"La Boca": (cuenca("la_boca", *LA_BOCA), "aguas arriba de La Boca, HydroBASINS"), **cuencas_presa}
 
     acu = wfs("m06_acuiferos_disponibilidad", "clvacuifero LIKE '19%'")
     ultimo = {}
@@ -238,6 +246,8 @@ def agua():
     for i in incendios:
         if not (CAJA[0] <= i["lat"] < CAJA[1] and CAJA[2] <= i["lon"] < CAJA[3]):
             continue
+        if not any(b in (i["tipoveget"] or "").lower() for b in BOSQUE):
+            continue
         c = celda(i["lat"], i["lon"])
         c["ha_w"] += i["ha"] * 0.5 ** ((2025 - i["anio"]) / VIDA_MEDIA_ANIOS)
         c["ha"] += i["ha"]
@@ -271,7 +281,25 @@ def agua():
     pend = pendiente_grados([c["centro"] for c in previos])
     for c, (elev, pdeg) in zip(previos, pend):
         c["elev"], c["pendiente"] = elev, pdeg
-    plantables = [c for c in previos if c["pendiente"] <= PENDIENTE_MAX and not fuera_de_sierra(c)]
+    plantables = [c for c in previos if c["pendiente"] <= PENDIENTE_MAX and not fuera_de_sierra(c)
+                  and (c["n"] or c["elev"] >= ELEV_MIN_SIN_REGISTRO)]
+    # Verdor actual: si la cicatriz ya reverdeció, baja la prioridad; si sigue descubierta, sube
+    from concurrent.futures import ThreadPoolExecutor
+    from ndvi import ndvi_celda
+    with ThreadPoolExecutor(6) as ex:
+        verdes = list(ex.map(lambda c: ndvi_celda(c["geom"].bounds), plantables))
+    for c, (nd, escenas) in zip(plantables, verdes):
+        c["ndvi"] = nd
+        if nd is None:
+            c["regeneracion"] = "Sin escena de satélite despejada en la temporada seca de 2026"
+        elif nd >= NDVI_ALTO:
+            c["score_raw"] *= 0.5
+            c["regeneracion"] = f"Verdor alto en la temporada seca de 2026 (NDVI {nd:.2f}): probablemente se regenera sola"
+        elif nd >= NDVI_BAJO:
+            c["regeneracion"] = f"Verdor medio en la temporada seca de 2026 (NDVI {nd:.2f}): regeneración parcial"
+        else:
+            c["score_raw"] *= 1.25
+            c["regeneracion"] = f"Verdor bajo en la temporada seca de 2026 (NDVI {nd:.2f}): suelo descubierto, prioridad"
     elegidos = lista_corta(plantables, N_AGUA, SEPARACION_KM)
     top = max(c["score_raw"] for c in elegidos)
 
@@ -292,25 +320,29 @@ def agua():
                            f"({c['ha']:,.0f} ha, CONAGUA)")
         if c["det"]:
             razones.append(f"{c['det']} detecciones de fuego por satélite en 2024-2025")
-        if c["presa"]:
+        if c["presa"] and c["presa"][0] == "La Boca":
+            razones.append("Drena hacia la presa La Boca y de ahí a El Cuchillo (cuenca trazada con HydroBASINS)")
+        elif c["presa"]:
             razones.append(f"Drena hacia la presa {c['presa'][0]} (cuenca {c['presa'][1]}, DOF)")
         if c["acuifero"]:
             a = c["acuifero"]
             razones.append(f"Sobre el acuífero en déficit: {a['nombre']}" if a["deficit"] else f"Sobre el acuífero {a['nombre']}")
+        razones.append(c["regeneracion"])
         razones.append(f"Pendiente media {c['pendiente']:.0f}°, plantable")
         zonas.append(dict(type="Feature", geometry=mapping(c["geom"]), properties=dict(
             id=f"AG-{k:02d}", objetivo="agua", rank=k, score=round(100 * c["score_raw"] / top, 1),
             nombre=f"{municipio} · {lugar}", municipio=municipio, razones=razones,
             metricas=dict(incendios=c["n"], ha_quemadas=round(c["ha"], 1), detecciones_2024_2025=c["det"],
-                          pendiente_grados=round(c["pendiente"], 1), elevacion_m=round(c["elev"])),
+                          pendiente_grados=round(c["pendiente"], 1), elevacion_m=round(c["elev"]), ndvi_2026=c["ndvi"]),
             centro=[round(lat, 5), round(lon, 5)])))
 
     # Sitios con fuego que no entran: lo que pide la fase 1 del Contexto
     descartados.sort(key=lambda c: -c["score_raw"])
     lineas = ["# Sitios descartados (agua)", "",
               f"Generado por `pipeline/build.py` el {HOY}. Celdas de ~2 km con más historia de incendios que **no** drenan "
-              "a una presa de abastecimiento (El Cuchillo, Cerro Prieto) ni recargan un acuífero que surte a la zona "
-              "metropolitana. Más las que sí drenan pero tienen pendiente mayor a 35°.", "",
+              "a una presa de abastecimiento (La Boca, El Cuchillo, Cerro Prieto) ni recargan un acuífero que surte a la zona "
+              "metropolitana, o que sí drenan pero están en valle, en pendiente mayor a 35° o sin bosque. Sólo cuentan "
+              "incendios en bosque (pino, encino, oyamel, táscate): en matorral y pastizal no se reforesta con árboles.", "",
               "| Municipio | Centro | Incendios 2005-2023 (ha) | Detecciones 2024-2025 | Motivo |", "|---|---|---|---|---|"]
     for c in descartados[:12]:
         mun = max(c["municipios"], key=c["municipios"].get) if c["municipios"] else cercano(*c["centro"])
@@ -321,6 +353,10 @@ def agua():
             mun = max(c["municipios"], key=c["municipios"].get) if c["municipios"] else cercano(*c["centro"])
             lineas.append(f"| {mun} | {c['centro'][0]:.3f}, {c['centro'][1]:.3f} | {c['n']} ({c['ha']:.0f}) | {c['det']} | "
                           f"Elevación {c['elev']:.0f} m: valle o pie de monte, fuera de la sierra |")
+        if not fuera_de_sierra(c) and c["pendiente"] <= PENDIENTE_MAX and not c["n"] and c["elev"] < ELEV_MIN_SIN_REGISTRO:
+            mun = cercano(*c["centro"])
+            lineas.append(f"| {MUNICIPIO_DE.get(mun, mun)} | {c['centro'][0]:.3f}, {c['centro'][1]:.3f} | 0 (0) | {c['det']} | "
+                          f"Sólo detección satelital, sin registro de bosque y debajo de {ELEV_MIN_SIN_REGISTRO} m |")
         if c["pendiente"] > PENDIENTE_MAX:
             mun = max(c["municipios"], key=c["municipios"].get) if c["municipios"] else cercano(*c["centro"])
             lineas.append(f"| {mun} | {c['centro'][0]:.3f}, {c['centro'][1]:.3f} | {c['n']} ({c['ha']:.0f}) | {c['det']} | "
@@ -364,10 +400,45 @@ def aire():
 
     estaciones = []
     import csv
+    pm = {r["estacion"]: r for r in csv.DictReader(open(FUENTES / "sinaica" / "pm_estaciones_12m.csv"))}
     for r in csv.DictReader(open(REPO / "pipeline" / "sima_estaciones.csv")):
-        estaciones.append(dict(estacion=r["estacion"], municipio=r["municipio"], lat=float(r["lat"]), lon=float(r["lon"])))
+        m = pm.get(r["estacion"], {})
+        num = lambda v: float(v) if v not in (None, "") else None
+        estaciones.append(dict(estacion=r["estacion"], municipio=r["municipio"], lat=float(r["lat"]), lon=float(r["lon"]),
+                               pm10=num(m.get("pm10_media")), pm25=num(m.get("pm25_media")),
+                               periodo=f"{m['desde']} a {m['hasta']}" if m else None))
+
+    # Municipios del reto 3: se ordenan por lo medido en su estación (12 meses de SINAICA)
+    medidas = [e for e in estaciones if e["pm10"] and e["pm25"]]
+    def norm(v, vals):
+        lo, hi = min(vals), max(vals)
+        return (v - lo) / (hi - lo) if hi > lo else 0
+    reto3 = []
+    for mun in ESTACIONES_RETO3:
+        e = next(x for x in estaciones if x["municipio"] == mun)
+        e["score_raw"] = (0.5 * norm(e["pm25"], [x["pm25"] for x in medidas]) +
+                          0.5 * norm(e["pm10"], [x["pm10"] for x in medidas])) if e["pm10"] and e["pm25"] else 0
+        reto3.append(e)
+    reto3.sort(key=lambda e: -e["score_raw"])
 
     zonas, k = [], 0
+    top_e = max(e["score_raw"] for e in reto3) or 1
+    for e in reto3:
+        k += 1
+        mun = "Pesquería" if e["municipio"] == "Pesqueria" else e["municipio"]
+        razones = []
+        if e["pm10"]:
+            razones.append(f"PM10 promedio {e['pm10']:.0f} µg/m³ y PM2.5 {e['pm25']:.1f} µg/m³ en 12 meses "
+                           f"(SINAICA, estación {e['estacion']})")
+            razones.append(f"{e['pm25'] / 5:.1f} veces la guía anual de la OMS para PM2.5 (5 µg/m³)")
+        razones.append("Municipio señalado en el reto 3 por mala calidad del aire")
+        zonas.append(dict(type="Feature", geometry=mapping(Point(e["lon"], e["lat"]).buffer(0.01, cap_style=3)),
+                          properties=dict(id=f"AI-{k:02d}", objetivo="aire", rank=k,
+                                          score=round(100 * e["score_raw"] / top_e, 1),
+                                          nombre=f"{mun} · alrededor de estación {e['estacion']}", municipio=mun,
+                                          razones=razones, metricas=dict(pm10=e["pm10"], pm25=e["pm25"]),
+                                          centro=[e["lat"], e["lon"]])))
+
     top = max(c["score_raw"] for c in colonias)
     for c in colonias:
         k += 1
@@ -375,29 +446,16 @@ def aire():
         zonas.append(dict(type="Feature", geometry=mapping(c["geom"]), properties=dict(
             id=f"AI-{k:02d}", objetivo="aire", rank=k, score=round(100 * c["score_raw"] / top, 1),
             nombre=f"Monterrey · {p['nbhd_name']}", municipio="Monterrey",
-            razones=[f"PM2.5 estimado {p['pm25']:.1f} µg/m³, arriba de la guía de la OMS (5 µg/m³)",
+            razones=[f"PM2.5 estimado {p['pm25']:.1f} µg/m³ por colonia (MIDE Monterrey 2022), "
+                     "arriba de la guía de la OMS (5 µg/m³)",
                      f"Copa arbórea {100 * (p['treeprop'] or 0):.0f} % de la colonia",
                      f"Isla de calor de {p['uhi']:.1f} °C", f"{int(p['population']):,} habitantes (MIDE Monterrey 2022)"],
             metricas=dict(pm25=p["pm25"], no2=p["no2"], copa_pct=round(100 * (p["treeprop"] or 0), 1),
                           isla_calor_c=p["uhi"], poblacion=int(p["population"])),
             centro=[round(c["centro"][0], 5), round(c["centro"][1], 5)])))
-    for mun in ESTACIONES_RETO3:
-        e = next(x for x in estaciones if x["municipio"] == mun)
-        k += 1
-        nombre_mun = "Pesquería" if mun == "Pesqueria" else mun
-        razones = [f"Municipio señalado en el reto 3 por mala calidad del aire (estación {e['estacion']})",
-                   "Prioridad por señalamiento: el SIMA no ofrece hoy datos descargables para ordenar estas zonas"]
-        if mun == "García":
-            razones.insert(1, "Los niveles más altos de PM10 y PM2.5 de la zona metropolitana se miden en García "
-                              "(Centro Mario Molina, 2018)")
-        zonas.append(dict(type="Feature", geometry=mapping(Point(e["lon"], e["lat"]).buffer(0.01, cap_style=3)),
-                          properties=dict(id=f"AI-{k:02d}", objetivo="aire", rank=k, score=None,
-                                          nombre=f"{nombre_mun} · alrededor de estación {e['estacion']}",
-                                          municipio=nombre_mun, razones=razones, metricas={},
-                                          centro=[e["lat"], e["lon"]])))
     est_geo = [dict(type="Feature", geometry=dict(type="Point", coordinates=[e["lon"], e["lat"]]),
-                    properties=dict(estacion=e["estacion"], municipio=e["municipio"], pm10=None, pm25=None,
-                                    periodo="sin datos públicos descargables (14-oct-2026)")) for e in estaciones]
+                    properties=dict(estacion=e["estacion"], municipio=e["municipio"], pm10=e["pm10"], pm25=e["pm25"],
+                                    periodo=e["periodo"])) for e in estaciones]
     return zonas, est_geo
 
 
@@ -452,6 +510,12 @@ def main():
             dict(nombre="MIDE Monterrey · índice urbano (PM2.5, copa arbórea, calor) por colonia, 2022",
                  url="https://mide.monterrey.gob.mx/", fecha=HOY),
             dict(nombre="SIMA Nuevo León · estaciones de calidad del aire", url="https://aire.nl.gob.mx/", fecha=HOY),
+            dict(nombre="SINAICA (INECC) · PM10 y PM2.5 horarios de 12 meses por estación del SIMA",
+                 url="https://sinaica.inecc.gob.mx/data.php", fecha=HOY),
+            dict(nombre="HydroBASINS nivel 12 (HydroSHEDS) · cuenca aguas arriba de La Boca",
+                 url="https://www.hydrosheds.org/products/hydrobasins", fecha=HOY),
+            dict(nombre="Sentinel-2 L2A vía Microsoft Planetary Computer · verdor (NDVI) temporada seca 2026",
+                 url="https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a", fecha=HOY),
             dict(nombre="CONAGUA · almacenamiento de presas (último dato publicado, abr-2025)",
                  url="https://sinav30.conagua.gob.mx:8080/PresasPG/presas/reporte/", fecha=HOY),
         ]))

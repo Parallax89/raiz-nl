@@ -51,3 +51,8 @@ Si el dashboard de otro integrante consume estos mismos archivos, todo queda con
 ## Fuentes (verificadas el 14-oct-2026)
 
 Detalle y endpoints en [docs/FUENTES.md](docs/FUENTES.md).
+
+## Cómo subir cambios
+
+Sin PRs ni revisiones: `git pull`, cambias, `git commit`, `git push` a `main`. Cada push a `main` se publica solo en
+producción (GitHub Pages, workflow `.github/workflows/deploy.yml`) en 1–2 minutos.

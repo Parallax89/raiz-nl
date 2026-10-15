@@ -52,14 +52,15 @@
 
   /* ---------- Mapa ---------- */
   const map = L.map('mapa', { preferCanvas: true }).setView([25.05, -100.05], 8);
-  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/';
-  L.tileLayer(ESRI + 'World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Mapa base © Esri, HERE, Garmin, © OpenStreetMap', maxZoom: 16
-  }).addTo(map);
+  const bases = window.raizBases(L);
+  bases['Mapa'].addTo(map);
+  L.control.layers(bases, null, { position: 'topright' }).addTo(map);
+  const conMapTiler = !!(window.RAIZ_CONFIG || {}).maptilerKey;
   map.createPane('fondo').style.zIndex = 350;      // acuíferos, colonias y cuencas debajo de todo
   map.createPane('etiquetas').style.zIndex = 450;
   map.getPane('etiquetas').style.pointerEvents = 'none';
-  L.tileLayer(ESRI + 'World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, pane: 'etiquetas' }).addTo(map);
+  // MapTiler ya trae etiquetas; con Esri se agregan encima.
+  if (!conMapTiler) L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, pane: 'etiquetas' }).addTo(map);
   // Con el mapa alejado, las estaciones se ven como punto y sin número
   const marcaZoom = () => map.getContainer().classList.toggle('zoom-bajo', map.getZoom() < 10);
   map.on('zoomend', marcaZoom);

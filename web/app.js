@@ -156,15 +156,7 @@
 
   /* ---------- Mapa ---------- */
   const map = L.map('map', { zoomControl: true }).setView([25.55, -100.15], 9);
-  const bases = {
-    'Mapa': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd', maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    }),
-    'Satélite (ver la sierra)': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19, attribution: 'Imágenes &copy; Esri, Maxar, Earthstar Geographics'
-    })
-  };
+  const bases = window.raizBases(L);
   bases['Mapa'].addTo(map);
   L.control.layers(bases, null, { position: 'topright' }).addTo(map);
   map.createPane('cuencasPane').style.zIndex = 350;

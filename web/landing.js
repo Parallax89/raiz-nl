@@ -91,12 +91,14 @@
   }
   function pintarDonadores(lista) {
     var reales = lista.slice().sort(function (a, b) { return String(b.fecha).localeCompare(String(a.fecha)); }).slice(0, 12);
+    function cuenta(n) { return n.toLocaleString('es-MX') + ' <small>' + (n === 1 ? 'árbol' : 'árboles') + '</small>'; }
     var items = reales.map(function (c) {
-      return '<li class="donador"><span class="donador-foto">' + esc(iniciales(c)) + '</span>' +
-        '<span class="donador-arboles">' + arboles(c).toLocaleString('es-MX') + ' <small>árboles</small></span></li>';
+      var nombre = c.nombre || (c.usuario ? '@' + c.usuario : 'Anónimo');
+      return '<li class="donador donador-real"><span class="donador-foto">' + esc(iniciales(c)) + '</span>' +
+        '<span class="donador-arboles"><span class="donador-nombre">' + esc(nombre) + '</span>' + cuenta(arboles(c)) + '</span></li>';
     }).concat(EJEMPLOS.map(function (d) {
       return '<li class="donador"><img class="donador-foto" src="' + d.foto + '" alt="" style="object-position:' + d.pos + '" loading="lazy">' +
-        '<span class="donador-arboles">' + d.arboles.toLocaleString('es-MX') + ' <small>árboles</small></span></li>';
+        '<span class="donador-arboles">' + cuenta(d.arboles) + '</span></li>';
     }));
     // Se repite la lista para que el loop no tenga hueco (la animación mueve -50%)
     while (items.length < 8) items = items.concat(items);

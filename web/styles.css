@@ -398,10 +398,6 @@ section[id], main[id] { scroll-margin-top: 16px; }
 .donadores-pista { list-style: none; margin: 0; padding: 4px 0; display: flex; gap: 14px; width: max-content; animation: deslizar var(--dur, 30s) linear infinite; }
 .donadores-ventana:hover .donadores-pista { animation-play-state: paused; }
 @keyframes deslizar { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) {
-  .donadores-pista { animation: none; }
-  .donadores-ventana { overflow-x: auto; }
-}
 .donador {
   display: flex; align-items: center; gap: 10px; flex-shrink: 0;
   background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.22);
@@ -413,6 +409,9 @@ section[id], main[id] { scroll-margin-top: 16px; }
   display: grid; place-items: center; font-weight: 900; font-size: 16px;
 }
 .donador-arboles { font-weight: 900; font-size: 18px; white-space: nowrap; }
+.donador-nombre { display: block; font-size: 14px; font-weight: 900; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.donador-real { background: rgba(111, 186, 13, 0.28); border-color: var(--fern); }
+.donador-real .donador-foto { background: var(--fern); font-size: 20px; }
 .donador-arboles small { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--sky); letter-spacing: 0.5px; }
 
 /* Mapa e indicadores dentro de «Dónde plantamos» */

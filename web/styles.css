@@ -423,3 +423,19 @@ section[id], main[id] { scroll-margin-top: 16px; }
 }
 .mapa-completo { display: inline-block; margin-top: 12px; font-weight: 700; color: var(--fern); }
 @media (max-width: 860px) { .mapa-indicadores iframe { height: 1150px; } }
+
+/* Diálogo de donación: nada se sale del ancho (los inputs no encogían bajo su ancho intrínseco) */
+.dlg { overflow-x: hidden; }
+.campo, .fila-2 > .campo { min-width: 0; }
+.campo input { width: 100%; min-width: 0; }
+.pago-demo { min-width: 0; max-width: 100%; }
+.total { overflow-wrap: anywhere; }
+
+/* Desktop: datos a la izquierda, pago a la derecha */
+@media (min-width: 860px) {
+  .dlg:has(#form-donar:not([hidden])) { width: min(860px, calc(100vw - 48px)); }
+  #form-donar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; align-items: start; }
+  #form-donar > * { grid-column: 1; }
+  #form-donar > h2, #form-donar > #dlg-zona, #form-donar > #dlg-error, #form-donar > .dlg-acciones { grid-column: 1 / -1; }
+  #form-donar > .pago-demo { grid-column: 2; grid-row: 3 / span 7; margin-top: 12px; }
+}

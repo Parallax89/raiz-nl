@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa e indicadores · Raíz NL</title>
+  <meta name="description" content="Incendios, cuencas, acuíferos, presas y calidad del aire en Nuevo León, con las zonas que prioriza Raíz NL.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="mapa.css">
+</head>
+<body>
+  <header class="barra">
+    <a class="logo" href="index.html">#RAÍZNL</a>
+    <h1>Mapa e indicadores</h1>
+    <a class="volver" href="index.html#donde">Donar un árbol →</a>
+  </header>
+
+  <main class="tablero">
+    <aside class="panel" aria-label="Indicadores">
+      <section class="filtros" aria-label="Filtro de años">
+        <div class="filtro-fila">
+          <label>Incendios desde <select id="desde"></select></label>
+          <label>hasta <select id="hasta"></select></label>
+          <button type="button" id="todos" class="btn-sec">Todos los años</button>
+        </div>
+        <label class="check"><input type="checkbox" id="solo-bosque"> Sólo incendios en bosque</label>
+      </section>
+
+      <section aria-labelledby="t-fuego">
+        <h2 id="t-fuego">Fuego en la sierra</h2>
+        <div class="kpis" id="kpis-fuego"></div>
+        <figure class="grafica">
+          <figcaption>Hectáreas quemadas por año <span class="fuente">CONAGUA · toca un año para filtrar</span></figcaption>
+          <div id="g-anios" class="g"></div>
+          <details><summary>Ver datos</summary><div id="tabla-anios"></div></details>
+        </figure>
+        <figure class="grafica">
+          <figcaption>Municipios con más hectáreas quemadas <span class="fuente">años seleccionados</span></figcaption>
+          <div id="g-municipios" class="g"></div>
+        </figure>
+      </section>
+
+      <section aria-labelledby="t-agua">
+        <h2 id="t-agua">Agua</h2>
+        <div class="kpis" id="kpis-agua"></div>
+      </section>
+
+      <section aria-labelledby="t-aire">
+        <h2 id="t-aire">Aire</h2>
+        <div class="kpis" id="kpis-aire"></div>
+        <figure class="grafica">
+          <figcaption>PM2.5 promedio de 12 meses por estación <span class="fuente">SINAICA · línea: guía de la OMS</span></figcaption>
+          <div id="g-pm25" class="g"></div>
+          <details><summary>Ver datos</summary><div id="tabla-pm"></div></details>
+        </figure>
+      </section>
+
+      <section aria-labelledby="t-raiz">
+        <h2 id="t-raiz">Raíz NL</h2>
+        <div class="kpis" id="kpis-raiz"></div>
+      </section>
+
+      <section class="fuentes" aria-labelledby="t-fuentes">
+        <h2 id="t-fuentes">Fuentes</h2>
+        <ul id="fuentes"></ul>
+        <p class="nota" id="generado"></p>
+      </section>
+    </aside>
+
+    <div class="mapa-wrap">
+      <div id="mapa" aria-label="Mapa interactivo de Nuevo León"></div>
+      <details class="capas" id="capas" aria-label="Capas del mapa"></details>
+    </div>
+  </main>
+
+  <div id="tooltip" class="tooltip" role="status" hidden></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="mapa.js"></script>
+</body>
+</html>

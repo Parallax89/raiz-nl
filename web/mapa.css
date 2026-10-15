@@ -1,0 +1,125 @@
+/* Mapa e indicadores · Raíz NL. Mismos tokens que styles.css del portal. */
+:root {
+  --spruce: #113259;
+  --spruce-2: #0b2442;
+  --fern: #6fba0d;
+  --gray-1: #f3f4f6;
+  --gray-2: #e5e7eb;
+  --gray-4: #9ca3af;
+  --text: #1f2937;
+  --muted: #5b6470;
+  --white: #ffffff;
+  /* Roles de datos (validados juntos: agua, aire y fuego pasan todas las parejas en daltonismo) */
+  --agua: #1d5fa8;
+  --aire: #b4580f;
+  --fuego: #8f2d56;
+  --estado-alerta: #fab219;      /* acuífero sin disponibilidad: siempre con etiqueta */
+  --estado-alerta-borde: #b7791f;
+  --grid: #e5e7eb;
+  --radius: 8px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+.barra {
+  display: flex; align-items: center; gap: 16px; padding: 10px 16px;
+  background: var(--spruce); color: var(--white);
+}
+.barra h1 { font-size: 16px; font-weight: 700; margin: 0; flex: 1; }
+.logo { color: var(--fern); font-weight: 900; letter-spacing: 0.04em; text-decoration: none; }
+.volver { color: var(--white); text-decoration: none; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.volver:hover { text-decoration: underline; }
+
+.tablero { flex: 1; display: grid; grid-template-columns: 400px 1fr; min-height: 0; }
+.panel { overflow-y: auto; padding: 14px 16px 24px; border-right: 1px solid var(--gray-2); background: var(--white); }
+.mapa-wrap { position: relative; min-height: 0; }
+#mapa { position: absolute; inset: 0; }
+
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--spruce); margin: 22px 0 10px; }
+.filtros { background: var(--gray-1); border-radius: var(--radius); padding: 10px 12px; }
+.filtro-fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
+.filtro-fila select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--gray-4); }
+.btn-sec { font: inherit; font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--spruce);
+  background: var(--white); color: var(--spruce); cursor: pointer; }
+.check { display: flex; gap: 6px; align-items: center; font-size: 13px; margin-top: 8px; }
+
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kpi { background: var(--gray-1); border-radius: var(--radius); padding: 10px 12px; }
+.kpi b { display: block; font-size: 22px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; }
+.kpi span { display: block; font-size: 12px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+.kpi.ancho { grid-column: 1 / -1; }
+
+.grafica { margin: 14px 0 0; }
+.grafica figcaption { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.fuente { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
+.g svg { display: block; width: 100%; height: auto; overflow: visible; }
+.g .eje { font-size: 10.5px; fill: var(--muted); }
+.g .valor { font-size: 10.5px; fill: var(--text); font-variant-numeric: tabular-nums; }
+.g .barra-dato { cursor: pointer; }
+.g .barra-dato:hover, .g .barra-dato:focus { opacity: 0.8; outline: none; }
+details { font-size: 12px; margin-top: 4px; }
+details summary { cursor: pointer; color: var(--muted); }
+table { border-collapse: collapse; width: 100%; margin-top: 6px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 3px 6px; border-bottom: 1px solid var(--gray-2); }
+td.n, th.n { text-align: right; }
+
+.fuentes ul { padding-left: 18px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.fuentes a { color: var(--spruce); }
+.nota { font-size: 12px; color: var(--muted); }
+
+.capas {
+  position: absolute; top: 12px; right: 12px; z-index: 500; background: var(--white);
+  border-radius: var(--radius); box-shadow: 0 6px 20px rgba(8, 24, 44, 0.18); padding: 10px 12px;
+  font-size: 12.5px; max-width: 270px;
+}
+.capas summary { cursor: pointer; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--spruce); }
+.capas[open] summary { margin-bottom: 6px; }
+.capas strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--spruce); margin-bottom: 6px; }
+.capas label { display: flex; align-items: center; gap: 7px; margin: 4px 0; cursor: pointer; }
+.sw { width: 14px; height: 14px; border-radius: 3px; flex: none; border: 2px solid transparent; }
+.sw.punto { border-radius: 50%; }
+.leyenda-escala { display: flex; gap: 2px; margin: 2px 0 6px 21px; }
+.leyenda-escala span { flex: 1; height: 8px; }
+.leyenda-texto { margin-left: 21px; color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; }
+
+.etq-presa, .etq-est {
+  background: var(--white); border: 2px solid var(--spruce); border-radius: 999px; padding: 1px 7px;
+  font: 700 11px "Montserrat", system-ui, sans-serif; color: var(--spruce); white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.etq-est { border-color: var(--aire); color: var(--text); }
+.leaflet-popup-content { font-family: "Montserrat", system-ui, sans-serif; font-size: 12.5px; line-height: 1.45; margin: 12px 14px; }
+.leaflet-popup-content h3 { font-size: 14px; margin: 0 0 4px; }
+.leaflet-popup-content ul { padding-left: 16px; margin: 6px 0; }
+.leaflet-popup-content .meta { color: var(--muted); font-size: 12px; }
+.leaflet-popup-content a { color: var(--spruce); font-weight: 700; }
+.leaflet-tooltip.cuenca { background: transparent; border: 0; box-shadow: none; font: 700 11px "Montserrat", sans-serif;
+  color: var(--spruce); text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+
+.tooltip {
+  position: fixed; z-index: 1000; pointer-events: none; background: var(--spruce-2); color: var(--white);
+  font-size: 12px; padding: 6px 9px; border-radius: 6px; max-width: 240px; line-height: 1.35;
+}
+
+@media (max-width: 860px) {
+  .tablero { grid-template-columns: 1fr; grid-template-rows: 60vh auto; }
+  .mapa-wrap { grid-row: 1; height: 60vh; }
+  .panel { grid-row: 2; border-right: 0; overflow: visible; }
+  body { display: block; }
+  .capas { max-width: 200px; font-size: 11.5px; }
+  .barra h1 { font-size: 14px; }
+}
+
+.etq-zona {
+  width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  font: 700 11px "Montserrat", system-ui, sans-serif; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.etq-zona.agua { background: var(--agua); }
+.etq-zona.aire { background: var(--aire); }
+.zoom-bajo .etq-est { font-size: 0; padding: 0; width: 10px; height: 10px; background: var(--aire); }

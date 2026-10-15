@@ -68,9 +68,11 @@ MUNICIPIO_DE = {"Laguna de Sánchez": "Santiago", "Ciénega de González": "Sant
 
 # ---------------- utilidades ----------------
 def wfs(capa, cql=None):
+    """Capa de CONAGUA SINA: primero la copia del repositorio, luego la caché local, luego el servidor."""
+    for archivo in (FUENTES / "sina" / f"{capa}.json", RAW / f"{capa}.json"):
+        if archivo.exists():
+            return json.loads(archivo.read_text())
     archivo = RAW / f"{capa}.json"
-    if archivo.exists():
-        return json.loads(archivo.read_text())
     url = f"{WFS}&typeNames=Sina:{capa}" + (f"&CQL_FILTER={requests.utils.quote(cql)}" if cql else "")
     r = requests.get(url, headers=UA, timeout=180)
     r.raise_for_status()
@@ -168,6 +170,68 @@ def pendiente_grados(puntos):
         g = math.hypot((en - es) / dy, (ee - eo) / dx)
         salida.append((e0, math.degrees(math.atan(g))))
     return salida
+
+
+def capas_mapa(incendios_geo, estaciones_geo, presas_geo, n_agua, n_aire):
+    """Acuíferos, colonias e indicadores agregados para web/mapa.html."""
+    acu = wfs("m06_acuiferos_disponibilidad")
+    ultimo = {}
+    for f in acu["features"]:
+        p = f["properties"]
+        if p["clvacuifero"].startswith("19") and (p["clvacuifero"] not in ultimo or
+                                                  (p["fechapub"] or "") > (ultimo[p["clvacuifero"]]["properties"]["fechapub"] or "")):
+            ultimo[p["clvacuifero"]] = f
+    acuiferos = []
+    for clave, f in sorted(ultimo.items()):
+        p = f["properties"]
+        acuiferos.append(dict(type="Feature", geometry=mapping(geom_wgs(f["geometry"]).simplify(0.004)), properties=dict(
+            clave=clave, nombre=texto(p["acuifero"]), situacion=p["situacion"],
+            deficit_hm3=round(-(p["dmanegativa"] or 0), 1), disponible_hm3=round(p["dmapositiva"] or 0, 1),
+            zmm=clave in ACUIFEROS_ZMM, publicacion=p["fechapub"])))
+    escribe("acuiferos.geojson", fc(acuiferos))
+
+    uesi = json.loads((FUENTES / "mide" / "uesi_mty2022.geojson").read_text())["features"]
+    colonias = [dict(type="Feature", geometry=mapping(shape(f["geometry"]).simplify(0.0002)), properties=dict(
+        nombre=f["properties"]["nbhd_name"], pm25=f["properties"]["pm25"],
+        copa_pct=round(100 * (f["properties"]["treeprop"] or 0), 1), isla_calor_c=f["properties"]["uhi"],
+        poblacion=int(f["properties"]["population"] or 0))) for f in uesi if f["properties"].get("pm25")]
+    escribe("colonias_mty.geojson", fc(colonias))
+
+    def grupo(tipo):
+        t = (tipo or "").lower()
+        if any(b in t for b in BOSQUE):
+            return "Bosque"
+        if "matorral" in t or "zonas aridas" in t or "árid" in t:
+            return "Matorral"
+        if "pastizal" in t or "herb" in t:
+            return "Pastizal"
+        return "Otra"
+    con = [f["properties"] for f in incendios_geo if f["properties"]["fuente"] == "CONAGUA"]
+    sat = [f["properties"] for f in incendios_geo if f["properties"]["fuente"] != "CONAGUA"]
+    por_veg = {}
+    for i in con:
+        g = por_veg.setdefault(grupo(i["tipoveget"]), dict(incendios=0, ha=0.0))
+        g["incendios"] += 1
+        g["ha"] += i["ha"] or 0
+    est = [e["properties"] for e in estaciones_geo if e["properties"]["pm25"]]
+    pm25 = sum(e["pm25"] for e in est) / len(est)
+    pm10 = sum(e["pm10"] for e in est) / len(est)
+    escribe("indicadores.json", dict(
+        generado=HOY,
+        incendios=dict(conagua=len(con), conagua_ha=round(sum(i["ha"] or 0 for i in con), 1), periodo_conagua="2005-2023",
+                       satelite_episodios=len(sat), satelite_detecciones=sum(i.get("detecciones") or 0 for i in sat),
+                       periodo_satelite="2024-2025",
+                       por_vegetacion={k: dict(incendios=v["incendios"], ha=round(v["ha"], 1)) for k, v in por_veg.items()}),
+        acuiferos=dict(total=len(acuiferos), sin_disponibilidad=sum(a["properties"]["situacion"] == "Sin Disponibilidad"
+                                                                     for a in acuiferos),
+                       deficit_total_hm3=round(sum(a["properties"]["deficit_hm3"] for a in acuiferos), 1),
+                       publicacion=max(a["properties"]["publicacion"] for a in acuiferos)),
+        aire=dict(estaciones=len(est), pm25_promedio=round(pm25, 1), pm10_promedio=round(pm10, 1), guia_oms_pm25=5,
+                  guia_oms_pm10=15, periodo=est[0]["periodo"],
+                  peor_pm25=max(est, key=lambda e: e["pm25"])["estacion"]),
+        presas=[dict(nombre=p["properties"]["nombre"], llenado_pct=p["properties"]["llenado_pct"],
+                     fecha=p["properties"]["fecha"]) for p in presas_geo],
+        zonas=dict(agua=n_agua, aire=n_aire)))
 
 
 def fc(features):
@@ -490,6 +554,7 @@ def main():
     escribe("cuencas.geojson", fc(cuencas))
     escribe("presas.geojson", fc(lista_presas))
     escribe("estaciones.geojson", fc(estaciones))
+    capas_mapa(incendios, estaciones, lista_presas, len(zonas_agua), len(zonas_aire))
     escribe("resumen.json", dict(
         generado=datetime.now().astimezone().isoformat(timespec="seconds"),
         incendios_total=ra["incendios"] + ra["satelite"], ha_quemadas_total=round(ra["ha"], 1),

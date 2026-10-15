@@ -242,7 +242,8 @@
       y += antes;
       lineas.forEach((l) => { if (y + size <= PIE) { y += size * 1.3; ctx.fillText(l, X, y); } });
     };
-    bloque(`${d.zona} · ${d.municipio}`, 500, 24, '#ffffff', 2, 14);
+    const zonaTxt = String(d.zona || '').toLowerCase().includes(String(d.municipio || '').toLowerCase()) ? d.zona : `${d.zona} · ${d.municipio}`;
+    bloque(zonaTxt, 500, 24, '#ffffff', 2, 14);
     bloque(IMPACTO(d.objetivo, d.arboles).replace('≈', 'aprox.'), 700, 22, '#b4dbe1', 1, 8);
     if (d.equipo) bloque('Equipo ' + d.equipo, 700, 22, '#b4dbe1', 1, 0);
 
@@ -272,7 +273,7 @@
     ctx.beginPath(); ctx.moveTo(tx, ty - 24); ctx.lineTo(tx + 17, ty + 2); ctx.lineTo(tx - 17, ty + 2); ctx.fill();
     ctx.fillStyle = '#7a4a24'; ctx.fillRect(tx - 3, ty + 2, 6, 7);
     const sitio = /^(localhost|127\.|100\.)/.test(location.host) || !location.host ? 'raiz-nl.netlify.app' : location.host;
-    ctx.font = `700 22px ${F}`; ctx.textAlign = 'right'; ctx.fillText(sitio, W - 64, H - 40);
+    ctx.fillStyle = '#ffffff'; ctx.font = `700 22px ${F}`; ctx.textAlign = 'right'; ctx.fillText(sitio, W - 64, H - 40);
     ctx.textAlign = 'left';
   }
   function blobTarjeta() {

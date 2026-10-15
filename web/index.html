@@ -63,7 +63,7 @@
       <section id="panel-tablero" role="tabpanel" aria-labelledby="tab-tablero" hidden>
         <h2>Tablero</h2>
         <div class="kpis" id="kpis"></div>
-        <h3>Compromisos en este navegador</h3>
+        <h3 id="titulo-donaciones">Compromisos en este navegador</h3>
         <div class="kpis" id="kpis-donaciones"></div>
         <p class="nota">Prototipo: los compromisos se guardan solo en tu navegador. No hay pagos.</p>
         <h3>Capas de contexto</h3>
@@ -116,6 +116,13 @@
       <label class="check">
         <input type="checkbox" name="etiquetar" disabled> Etiquétame en la publicación
       </label>
+      <div class="campo">Texto de la publicación
+        <p id="dlg-texto" class="texto-x"></p>
+      </div>
+      <label class="check" id="campo-publicar" hidden>
+        <input type="checkbox" name="publicar"> Autorizo que la cuenta de Raíz NL publique este texto
+      </label>
+      <p id="dlg-error" class="aviso" role="alert" hidden></p>
       <div class="dlg-acciones">
         <button type="button" class="btn-sec" id="btn-cancelar">Cancelar</button>
         <button type="submit" class="btn-pri" id="btn-confirmar">Confirmar donación</button>
@@ -124,7 +131,7 @@
     <div id="dlg-gracias" hidden>
       <h2>¡Gracias! 🌳</h2>
       <p id="gracias-texto"></p>
-      <p class="nota">Prototipo: registramos tu compromiso, todavía no hay cobro. Publicar en X abre tu cuenta; tú decides si lo publicas.</p>
+      <p class="nota">Prototipo: registramos tu donación simbólica, todavía no hay cobro. «Publicar en X» abre tu cuenta con el mismo texto; tú decides si lo publicas.</p>
       <div class="dlg-acciones">
         <button type="button" class="btn-sec" id="btn-cerrar">Cerrar</button>
         <a class="btn-pri" id="btn-x" href="#" target="_blank" rel="noopener">Publicar en X</a>

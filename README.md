@@ -14,10 +14,12 @@ Grok Monterrey Build Day · 14-oct-2026 · combina los retos 1 (infiltración / 
    - **Aire:** zonas de la ZMM donde la gente respira peor (Pesquería, Cadereyta, Juárez, Santa Catarina, García…)
      y hay poca cobertura vegetal o suelo desnudo que levanta polvo.
 3. Escoge una zona y dona (en el MVP es un compromiso, sin pagos).
-4. Publica en X desde su propia cuenta: *"Acaban de donar un árbol para mejorar el suministro de agua del área
-   metropolitana…"*, con etiqueta opcional.
+4. Ve el texto exacto de la publicación (por ejemplo, *"Donaron un árbol para restaurar Los Cuartones, cuenca que
+   aporta a El Cuchillo."*), decide si se etiqueta y da su visto bueno. Con la API, la cuenta del proyecto lo
+   publica; sin API, lo publica desde su propia cuenta. Nunca se promete "mejorar el suministro de agua": el árbol no
+   mete litros a la presa (ver [docs/Contexto_Arbol.md](docs/Contexto_Arbol.md)).
 
-La evaluación de la idea, las correcciones y el plan de trabajo están en **[docs/PLAN.md](docs/PLAN.md)**.
+La evaluación de la idea, las correcciones y el plan de trabajo están en **[docs/PLAN.md](docs/PLAN.md)**. El API de donaciones (zonas con cupo, textos canónicos, bot de X) está en **[backend/](backend/README.md)** y su plan en **[docs/BACKEND.md](docs/BACKEND.md)**.
 
 ## Estructura
 

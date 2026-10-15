@@ -79,7 +79,9 @@
     { foto: 'img/donadores/d1.jpg', pos: 'center 15%', arboles: 250 },
     { foto: 'img/donadores/d2.jpg', pos: 'center 35%', arboles: 100 },
     { foto: 'img/donadores/d3.png', pos: 'center 25%', arboles: 500 },
-    { foto: 'img/donadores/d4.png', pos: 'center 40%', arboles: 50 }
+    { foto: 'img/donadores/d4.png', pos: 'center 40%', arboles: 50 },
+    { foto: 'img/donadores/d5.png', pos: '60% 30%', arboles: 150 },
+    { foto: 'img/donadores/d6.avif', pos: 'center 30%', arboles: 75 }
   ];
   function iniciales(c) {
     var t = String(c.nombre || c.usuario || '').trim();

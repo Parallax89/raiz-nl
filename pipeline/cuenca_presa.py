@@ -17,9 +17,11 @@ CAJA = (-101.5, 24.0, -99.0, 26.5)
 
 
 def cuenca(nombre, lon, lat):
+    copia = RAW.parents[1] / "investigacion" / "fuentes" / "hydrobasins" / f"cuenca_{nombre}.geojson"
     salida = RAW / f"cuenca_{nombre}.geojson"
-    if salida.exists():
-        return shape(json.loads(salida.read_text())["geometry"])
+    for archivo in (copia, salida):
+        if archivo.exists():
+            return shape(json.loads(archivo.read_text())["geometry"])
     if not ZIP.exists():
         import requests
         ZIP.write_bytes(requests.get(URL, timeout=600).content)

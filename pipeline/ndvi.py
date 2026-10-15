@@ -15,7 +15,8 @@ from pystac_client import Client
 from rasterio.warp import transform_bounds
 from rasterio.windows import from_bounds
 
-CACHE = Path(__file__).resolve().parent / "raw" / "ndvi_cache.json"
+# Valores ya medidos, versionados en el repositorio: el resultado no cambia aunque cambien las escenas disponibles
+CACHE = Path(__file__).resolve().parents[1] / "investigacion" / "fuentes" / "sentinel2" / "ndvi_celdas.json"
 CATALOGO = "https://planetarycomputer.microsoft.com/api/stac/v1"
 
 

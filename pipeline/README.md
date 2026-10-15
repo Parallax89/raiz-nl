@@ -5,11 +5,11 @@ Escribe `web/data/` siguiendo el contrato del README raíz.
 ```bash
 pip install requests shapely pyshp pystac-client planetary-computer rasterio numpy
 python pipeline/sinaica.py     # 12 meses de PM10 y PM2.5 por estación (≈5 min; guarda en investigacion/fuentes/sinaica/)
-python pipeline/build.py       # zonas, incendios, cuencas, presas, estaciones y resumen (≈30 s con caché)
+python pipeline/build.py       # zonas, incendios, cuencas, presas, estaciones, acuíferos, colonias, indicadores y resumen
 cd backend && python -m app.seed --reset   # para que la API tome las zonas nuevas
 ```
 
-Descarga a `pipeline/raw/` (ignorado por git) lo que falte: capas de CONAGUA SINA (el GeoServer pide un
+Todo lo necesario para reconstruir `web/data/` sin internet ya está en `investigacion/fuentes/` (capas de CONAGUA en `sina/`, cuenca de La Boca en `hydrobasins/`, verdor ya medido en `sentinel2/`, promedios y serie mensual de PM en `sinaica/`). Si falta algo, lo descarga a `pipeline/raw/` (ignorado por git): capas de CONAGUA SINA (el GeoServer pide un
 `User-Agent` de navegador), HydroBASINS nivel 12 y las escenas de Sentinel-2 que se consultan. Usa lo que ya está en
 `investigacion/fuentes/`: incendios de CONAGUA 2005-2023, detecciones VIIRS 2024-2025 (`firms/`), presas, índice
 urbano de MIDE Monterrey y promedios de SINAICA (`sinaica/`).

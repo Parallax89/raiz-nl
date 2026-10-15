@@ -34,7 +34,7 @@ docs/       Plan, contrato de datos y fuentes.
 
 ```bash
 python3 -m http.server 8000 --directory web
-# abrir http://localhost:8000
+# abrir http://localhost:8000 (portal) y http://localhost:8000/mapa.html (mapa e indicadores)
 ```
 
 ## Contrato de datos (lo que el pipeline escribe y el portal/dashboard lee)
@@ -46,6 +46,9 @@ python3 -m http.server 8000 --directory web
 | `web/data/presas.geojson` | Point | `clavesih`, `nombre`, `almacenamiento_mm3`, `llenado_pct`, `fecha` |
 | `web/data/estaciones.geojson` | Point | `estacion`, `municipio`, `pm10`, `pm25`, `periodo` |
 | `web/data/cuencas.geojson` | Polygon | `cuenca`, `presa_destino` |
+| `web/data/acuiferos.geojson` | Polygon | `clave`, `nombre`, `situacion` (Con/Sin Disponibilidad), `deficit_hm3`, `disponible_hm3`, `zmm`, `publicacion` |
+| `web/data/colonias_mty.geojson` | Polygon | `nombre`, `pm25`, `copa_pct`, `isla_calor_c`, `poblacion` (sólo municipio de Monterrey, MIDE 2022) |
+| `web/data/indicadores.json` | — | Conteos para `web/mapa.html`: incendios por fuente y vegetación, acuíferos, aire, presas, zonas |
 | `web/data/resumen.json` | — | `generado`, `incendios_total`, `ha_quemadas_total`, `periodo_incendios`, `zonas_agua`, `zonas_aire`, `fuentes` [{`nombre`, `url`, `fecha`}] |
 
 Si el dashboard de otro integrante consume estos mismos archivos, todo queda conectado.

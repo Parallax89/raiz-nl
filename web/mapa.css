@@ -123,3 +123,7 @@ td.n, th.n { text-align: right; }
 .etq-zona.agua { background: var(--agua); }
 .etq-zona.aire { background: var(--aire); }
 .zoom-bajo .etq-est { font-size: 0; padding: 0; width: 10px; height: 10px; background: var(--aire); }
+
+/* Incrustado en index.html (#mapa): sin barra superior; el sitio ya tiene la suya */
+.embebido .barra { display: none; }
+.embebido body { height: 100%; }

@@ -127,3 +127,13 @@ td.n, th.n { text-align: right; }
 /* Incrustado en index.html (#mapa): sin barra superior; el sitio ya tiene la suya */
 .embebido .barra { display: none; }
 .embebido body { height: 100%; }
+
+/* Selector de objetivo y botón de donar (mapa combinado) */
+.sel-obj { position: absolute; top: 10px; left: 56px; z-index: 800; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  background: #fff; border-radius: 999px; padding: 6px 8px 6px 14px; box-shadow: 0 2px 10px rgba(8, 24, 44, 0.2); font: 700 13px Montserrat, system-ui, sans-serif; color: #113259; }
+.sel-obj button { border: 1px solid #d1d5db; background: #f3f4f6; color: #113259; border-radius: 999px; padding: 6px 12px; font: inherit; cursor: pointer; }
+.sel-obj button[aria-pressed="true"] { background: #113259; border-color: #113259; color: #fff; }
+.btn-donar-zona { display: block; width: 100%; margin-top: 8px; border: 0; border-radius: 999px; padding: 10px 14px;
+  background: #dc582a; color: #fff; font: 900 13px Montserrat, system-ui, sans-serif; text-transform: uppercase; cursor: pointer; }
+.btn-donar-zona:hover { background: #c44a1f; }
+@media (max-width: 600px) { .sel-obj span { display: none; } .sel-obj { left: 50px; right: 10px; padding-left: 8px; } }

@@ -552,14 +552,23 @@
     state.arboles = normArboles(e.target.value);
     $$('.monto').forEach((x) => x.setAttribute('aria-pressed', String(Number(x.dataset.arboles) === state.arboles)));
   });
+  // El mapa de «Dónde plantamos» es mapa.html incrustado: le decimos el objetivo y él nos pide abrir la donación
+  const iframeMapa = () => document.querySelector('#mapa iframe');
   $('#btn-siguiente').addEventListener('click', () => {
-    seleccionarObjetivo(objetivoCard);
-    $('#donde').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(() => map.invalidateSize(), 400);
+    $('#mapa').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const fr = iframeMapa();
+    if (fr && fr.contentWindow) fr.contentWindow.postMessage({ raiz: 'objetivo', objetivo: objetivoCard }, location.origin);
+  });
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !e.data || e.data.raiz !== 'donar') return;
+    const f = buscarZona(e.data.id);
+    if (f) abrirDonacion(f);
   });
   $('#tab-tablero').addEventListener('click', () => mostrarTab('tablero'));
 
   Promise.all([cargarDatos(), cargarFichas()]).then(() => {
+    const zonaUrl = new URLSearchParams(location.search).get('zona');
+    if (zonaUrl && buscarZona(zonaUrl)) setTimeout(() => abrirDonacion(buscarZona(zonaUrl)), 300);
     crearContexto();
     pintarTablero();
     setTimeout(() => map.invalidateSize(), 0);

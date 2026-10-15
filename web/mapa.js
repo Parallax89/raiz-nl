@@ -74,7 +74,7 @@
     const prioridad = p.score != null ? `Prioridad ${fmt(p.score)}/100 · ` : '';
     return `<h3>${esc(p.nombre)}</h3>
       <div class="meta">${prioridad}${p.objetivo === 'agua' ? 'Agua' : 'Aire'} · ${esc(p.id)}</div>
-      <ul>${razones}</ul><a href="index.html#donar" target="_top">Donar un árbol aquí →</a>`;
+      <ul>${razones}</ul><button type="button" class="btn-donar-zona" data-zona="${esc(p.id)}">🌳 Donar un árbol aquí</button>`;
   }
 
   function capaZonas(objetivo) {
@@ -433,6 +433,33 @@
   }
 
   /* ---------- Arranque ---------- */
+  /* ---------- Donar desde el mapa ---------- */
+  function donarEn(id) {
+    if (EMBEBIDO && window.parent !== window) window.parent.postMessage({ raiz: 'donar', id }, location.origin);
+    else location.href = 'index.html?zona=' + encodeURIComponent(id) + '#donde';
+  }
+  map.on('popupopen', (e) => {
+    const b = e.popup.getElement() && e.popup.getElement().querySelector('.btn-donar-zona');
+    if (b) b.addEventListener('click', () => donarEn(b.dataset.zona));
+  });
+  function verObjetivo(obj) {
+    document.querySelectorAll('.sel-obj button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.obj === obj)));
+    const ver = { zonasAgua: obj !== 'aire', zonasAire: obj !== 'agua' };
+    Object.keys(ver).forEach((id) => {
+      const capa = state.capas[id];
+      if (!capa) return;
+      if (ver[id]) capa.addTo(map); else map.removeLayer(capa);
+      const chk = document.querySelector(`#capas input[data-capa="${id}"]`);
+      if (chk) chk.checked = ver[id];
+    });
+    const fs = state.datos.zonas.features.filter((f) => obj === 'todas' || f.properties.objetivo === obj);
+    if (fs.length) map.fitBounds(L.geoJSON({ type: 'FeatureCollection', features: fs }).getBounds(), { padding: [30, 30], maxZoom: 11 });
+  }
+  document.querySelectorAll('.sel-obj button').forEach((b) => b.addEventListener('click', () => verObjetivo(b.dataset.obj)));
+  window.addEventListener('message', (e) => {
+    if (e.origin === location.origin && e.data && e.data.raiz === 'objetivo' && state.datos.zonas) verObjetivo(e.data.objetivo);
+  });
+
   Promise.all(['zonas.geojson', 'incendios.geojson', 'cuencas.geojson', 'presas.geojson', 'estaciones.geojson',
     'acuiferos.geojson', 'indicadores.json', 'resumen.json'].map(traer)).then((v) => {
     const [zonas, incendios, cuencas, presas, estaciones, acuiferos, indicadores, resumen] = v;

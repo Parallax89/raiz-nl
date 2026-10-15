@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="promo">🌳 Grok Monterrey Build Day · prototipo: tu árbol, donde más ayuda a Monterrey</div>
   <header class="topbar">
     <div class="brand">
       <span class="brand-mark" aria-hidden="true">🌳</span>
@@ -21,7 +22,21 @@
     </nav>
   </header>
 
-  <main class="layout">
+  <section class="landing" aria-labelledby="landing-titulo">
+    <h1 id="landing-titulo" class="sr">Raíz NL</h1>
+    <p class="landing-eyebrow">Monterrey, Nuevo León</p>
+    <p class="landing-count"><span id="contador" aria-live="polite">0</span></p>
+    <p class="landing-label">árboles comprometidos en este navegador</p>
+    <p class="landing-lead">Dona un árbol donde más rinde: para el agua de las presas o para el aire que respira la zona metropolitana.</p>
+    <a class="landing-cta" href="#donar">Plantar mi árbol</a>
+    <div class="stats" id="stats-landing">
+      <div class="stat"><span aria-hidden="true">🔥</span><b id="st-ha">–</b><small>hectáreas quemadas en la sierra</small></div>
+      <div class="stat"><span aria-hidden="true">💧</span><b id="st-agua">–</b><small>zonas priorizadas para agua</small></div>
+      <div class="stat"><span aria-hidden="true">🌬️</span><b id="st-aire">–</b><small>zonas priorizadas para aire</small></div>
+    </div>
+  </section>
+
+  <main class="layout" id="donar">
     <aside class="panel">
       <section id="panel-donar" role="tabpanel" aria-labelledby="tab-donar">
         <div class="objetivo-switch" role="group" aria-label="Objetivo del árbol" hidden id="objetivo-switch">
@@ -118,6 +133,10 @@
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <footer class="foot">
+    <p>Raíz NL · Datos abiertos de CONAGUA y SIMA Nuevo León · Prototipo sin pagos.</p>
+  </footer>
   <script src="app.js"></script>
+  <script src="landing.js"></script>
 </body>
 </html>

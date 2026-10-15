@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<!--<meta http-equiv="refresh" content="3600" >--> <!--meta etiqueta medida en segundos para refrescar la p·gina web -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Direcci&oacute;n de Gesti&oacute;n de Calidad del Aire - SIMA</title>
+    
+	<style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #mapid { width:100%;height: 600px; }
+      .info {
+          padding: 6px 8px;
+          font: 18px/20px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.5);
+          box-shadow: 0 0 15px rgba(0,0,0,0.2);
+          border-radius: 5px;
+      }
+      .info h4 {
+      	  font-family: Verdana, Geneva, sans-serif;
+          margin: 0 0 1px;
+          color: #333;
+      }
+      .legend {
+          line-height: 17px;
+          color: #555;
+      }
+      .legend i {
+          width: 15px;
+          height: 15px;
+          float: left;
+          margin-right: 8px;
+          opacity: 0.7;
+      }
+    </style>
+    <script src="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"></script>
+	<!-- Leaflet CSS file -->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	
+	<!-- Leaflet JavaScript file -->
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script type="text/javascript">
+        setTimeout(function() { location.reload(true);},1000*60*60);
+    </script>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <!--<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
+    <!-- <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css"> -->
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div id="templatemo-contact">
+            <div class="container">
+				<div  width="100%" align="right">
+					<font color='purple' ><p style='font-size:20px; font-family:Poppins;'> Fecha y Hora del Reporte de Calidad del Aire: <b> mi√©rcoles, 14 de octubre de 2026 a las 17:00 hrs.</p></font></b>				</div>
+                <div class="row">				
+                    <div class="col-md-12">
+						<iframe src="http://aire.nl.gob.mx/airemapbing/airebing_icars_alt.php" width="100%" height="604px"></iframe>  
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="col-md-10 contact_right">
+						<!--<p align="left" ><span class="apple-style-span" style="background-color: #81D5D5;float:left;" >&nbsp;<font size="2">*<b>Estaci&oacute;n Santa Catarina: Falla en transmisi&oacute;n de datos por el proveedor de internet. Recolecci&oacute;n de datos funcionando.</b></font>&nbsp;</span></p><br>-->
+                        <p><font color='purple' ><p style='font-size:15px'> Valores generados por la red de monitoreo del Gobierno del Estado de Nuevo Le&oacute;n </p></font></p>                        
+                    </div>
+                </div><!-- /.row   #FFFFCC-->
+				<div class="row" align="center">
+                    <table  width="98%">
+                        <tr border="1" style="background-color:#FFFFCC">
+							<td width="100" align="center"><p style='font-size:15px'>Contaminante</p></td>
+							
+							<td width="100" align="center"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/marcadores/drawable-hdpi/green_marker2.png" class="HyperLink" alt="0 - 100 Satisfactoria" width="55px"/></td>
+
+                            <td width="100" align="center"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/marcadores/drawable-hdpi/yellow_marker2.png"  class="HyperLink" alt="101 - &nbsp;200 No Satisfactoria" width="55px"/></td>
+
+                            <td width="100" align="center"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/marcadores/drawable-hdpi/orange_marker2.png" class="HyperLink"  alt="201 - &nbsp;300 Mala (Fase 1 del PRC)" width="55px"/></td>
+
+                            <td width="100" align="center"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/marcadores/drawable-hdpi/red_marker2.png" class="HyperLink" alt="301 - &nbsp;500 Muy Mala" width="55px"/></td>
+
+                            <td width="150" align="center"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/marcadores/drawable-hdpi/purple_marker2.png" class="HyperLink" alt="301 - &nbsp;500 Muy Mala" width="55px"/></td>
+
+                            <td width="100" align="center"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/marcadores/drawable-hdpi/gray_marker2.png" class="HyperLink" alt="Mtto" width="55px"/></td>
+
+                        </tr>
+                        <tr style="background-color:#FFFFCC">
+							<td align="center"><p style='font-size:15px'>Indice<br />Riesgo</p></td>
+							
+                            <td align="center"><p style='font-size:15px'>Buena<br />Bajo</p></td>
+
+                            <td align="center"><p style='font-size:15px'>Regular<br />Moderado</p></td>
+
+                            <td align="center"><p style='font-size:15px'>Mala<br />Alto</p></td>
+
+                            <td align="center"><p style='font-size:15px'>Muy Mala<br />Muy Alto</p></td>
+
+                            <td align="center"><p style='font-size:15px'>Extremadamente Mala<br />Extremadamente Alto</p></td>
+
+                            <td align="center"><p style='font-size:15px'>Mantenimiento</p></td>
+                        </tr>
+						
+                    </table>
+					
+                </div><!-- /.row -->
+                <br>
+                <div class="row" align="center" >
+                    <table width="90%">
+						<tr style="background-color:#FFFFCC">
+							<a href="#" class="image featured"><img src="http://aire.nl.gob.mx/Sima2017phpgoogle/images/tabla_IAS.png"  width="96%"/></a>
+							<!--<section>
+								<a href="#" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+								
+							</section>-->
+                        </tr>
+                        <tr style="background-color:#FFFFCC">
+                            <td width="15%" align="center">
+								 <!--<a href="http://aire.nl.gob.mx:81/Sima2017reportes/ReporteSemanalSimaMaximosv2.php" >-->
+								 <a href="#" >
+								 <!-- <a href="http://aire.nl.gob.mx:81/Sima2017reportes/ReporteSemanalSimaIMaximos.php" > -->
+									<button type="button" class="btn btn-block btn-lg"><b>Reporte Semanal</b><br> de la calidad del aire</button>
+                                 </a>
+                            </td>
+							<td width="3%" >
+								<img src="http://aire.nl.gob.mx/Sima2017/Images/barragris.png"  alt="SIMA" WIDTH="11px" height="90%"/>
+							</td>
+                            <td width="70%">
+                                <b><p style='font-size:15px'>Notas:</p></b>
+            					<ul>
+            						<li><p style='font-size:15px'>ND significa que no hay datos disponibles</p></li>
+            						<li><p style='font-size:15px'>La informaci&oacute;n corresponde a datos en tiempo real NO VALIDADA del &Iacute;ndice de Aire y Salud</p></li>
+            					</ul>								
+                            </td>
+						<!--	 <td width="3%" >
+								<img src="https://aire.nl.gob.mx/Sima2017/Images/barragris.png"  alt="SIMA" WIDTH="11px" height="90%"/>
+							</td>
+							<td width="15%" align="center">
+							<nav id="nav1">
+								
+											<a href="https://aire.nl.gob.mx/rep_meteorologico.html" class="button">
+											<button type="button" style="background-color:#f9ab02" class="btn btn-block btn-lg"><b>Bolet&iacute;n Meteorol&oacute;gico</b><br> y calidad del aire</button>
+											</a>
+								
+							</nav>
+							</td>  -->
+                        </tr>
+                    </table>
+                </div><!-- /.row -->
+                <br>
+                <div class="row" align="center">
+                    <table  width="98%"  >
+                        <tr >
+                            <td width="50%">
+								<!-- <img src="https://aire.nl.gob.mx/Sima2017/Images/tbl_precontingencia.png"  alt="SIMA" WIDTH="380px"/> -->
+                            </td>
+                            <td width="50%">
+                                <table  >
+                                  <tr>
+                                      <td colspan="2"><b><p style='font-size:15px'>Organismo responsable</p></b></td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="2"><b><font color="purple" ><p style='font-size:15px'>Secretar&iacute;a de Medio Ambiente</p></font></b></td>
+                                  </tr>
+                                  <tr>
+                                      <td>
+            							<img src="http://aire.nl.gob.mx/Sima2017/Images/logo_SIMA_Gob.jpeg" class="logo" alt="SIMA" WIDTH=auto HEIGHT=60/>
+                                      </td>
+                                      <td> <p style='font-size:15px'>	Washington # 2000 Ote. <br />
+                    						Torre Administrativa Piso 27  <br />
+                    						Col. Obrera, Monterrey, N.L. C.P. 64010. <br />
+                    						Tel&eacute;fono: 2033-2100 <br /></p>
+                                      </td>
+                                  </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                 </div><!-- /.row -->
+            </div><!-- /.container -->
+        </div><!-- /#templatemo-contact --> 
+    <script src="http://cdn.leafle	tjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="Leaflet-master/src/map/Map.js"></script>
+</body>
+</html>

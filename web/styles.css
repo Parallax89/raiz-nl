@@ -5,7 +5,9 @@
   --text: #1c2420;
   --muted: #5b6760;
   --border: #d9dfd8;
-  --brand: #2f6b3f;
+  --brand: #1f7a3a;
+  --lima: #c6e84a;
+  --verde-oscuro: #0e3b22;
   --brand-ink: #ffffff;
   --agua: #1d5fa8;
   --agua-soft: #e3eefb;
@@ -102,8 +104,7 @@ button { cursor: pointer; }
 }
 
 @media (min-width: 900px) {
-  body { height: 100dvh; }
-  .layout { flex-direction: row; overflow: hidden; }
+  .layout { flex-direction: row; overflow: hidden; height: min(100dvh, 820px); scroll-margin-top: 0; }
   .panel {
     order: 0;
     width: 400px;
@@ -284,3 +285,31 @@ button { cursor: pointer; }
 /* Leaflet */
 .leaflet-tooltip { font-size: 12.5px; }
 .leaflet-control-layers { font-size: 13px; }
+
+/* Portada */
+.promo { background: var(--lima); color: var(--verde-oscuro); text-align: center; font-weight: 700; font-size: 14px; padding: 8px 12px; }
+.landing {
+  background: radial-gradient(120% 90% at 50% 0%, #1f7a3a 0%, var(--verde-oscuro) 70%);
+  color: #fff;
+  text-align: center;
+  padding: 48px 16px 40px;
+}
+.landing-eyebrow { margin: 0; text-transform: uppercase; letter-spacing: 0.14em; font-size: 13px; color: var(--lima); font-weight: 700; }
+.landing-count { margin: 8px 0 0; font-size: clamp(72px, 18vw, 168px); line-height: 1; font-weight: 900; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.landing-label { margin: 4px 0 16px; font-size: 18px; font-weight: 600; }
+.landing-lead { max-width: 560px; margin: 0 auto 24px; line-height: 1.5; opacity: 0.92; }
+.landing-cta {
+  display: inline-block; background: var(--lima); color: var(--verde-oscuro);
+  padding: 14px 28px; border-radius: 999px; font-weight: 800; font-size: 18px; text-decoration: none;
+}
+.landing-cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.stats { display: grid; gap: 12px; max-width: 900px; margin: 40px auto 0; }
+@media (min-width: 700px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+.stat { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 16px; padding: 18px; display: grid; gap: 4px; }
+.stat span { font-size: 26px; }
+.stat b { font-size: 36px; font-weight: 900; color: var(--lima); }
+.stat small { font-size: 13.5px; opacity: 0.9; }
+.foot { background: var(--verde-oscuro); color: #d7e8dc; text-align: center; padding: 20px 16px; font-size: 13px; }
+.foot p { margin: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

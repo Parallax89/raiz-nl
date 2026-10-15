@@ -1,0 +1,976 @@
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+<style type="text/css">
+html {
+    height: 100%
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0
+}
+
+#map_canvas {
+    height: 600px
+}
+#legend0 {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        margin: 10px;
+        border: 0px solid #000;
+		opacity: 0.7;
+      }
+      #legend0 h3 {
+        margin-top: 0;		
+      }
+      #legend0 img {
+        vertical-align: middle;
+      }
+	  
+	  #legend2 {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        margin: 10px;
+        border: 0px solid #000;
+		opacity: 0.7;
+      }
+      #legend2 h3 {
+        margin-top: 0;		
+      }
+      #legend2 img {
+        vertical-align: middle;
+      }
+</style>
+<!--<script type="text/javascript"    
+	src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAoZkEM-A6AMKZZ0Cvn05KT8No9xFF5UuI&sensor=false">
+</script>-->
+
+
+<script type="text/javascript"   	
+		src="http://maps.googleapis.com/maps/api/js?key=AgRfpnJ3EAOS6acz6tUMQMZ8M0tLhHLBlP-S07Vk0eh8Vb_0iuGYdvcw96OXf9hM&sensor=false">
+</script>
+<!--<script type="text/javascript"   	
+	src="http://maps.googleapis.com/maps/api/js?key=AjJ7bU14xpvZP23U-1UbmUhDHzaBQs5njWhPH7VfY0TKrdxep8l1crc2JPjqiRYv&sensor=false">
+    src="http://maps.googleapis.com/maps/api/js?key=AkOn24eIVjTKr66n0dqWaVzzvC3iqumKRaJo6iicTcNn43DwOyqsFIMVzqzet2E6&sensor=false">
+</script>-->
+	
+<script type="text/javascript">
+
+	var arrayIMKTodo11 = [{"Estacion":"centro","Parameter":"O3Nc","contaminante":"O3","HrAveData":38,"concentracion":"43","Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":23,"concentracion":"7","Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"O3Nc","contaminante":"O3","HrAveData":29,"concentracion":"33","Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":37,"concentracion":"11","Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":57,"concentracion":"18","Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"O3Nc","contaminante":"O3","HrAveData":42,"concentracion":"47","Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"PM10Nc","contaminante":"PM10","HrAveData":-1,"concentracion":"-1","Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":43,"concentracion":"13","Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":51,"concentracion":"16","Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM10Nc","contaminante":"PM10","HrAveData":27,"concentracion":"24","Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":40,"concentracion":"12","Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":33,"concentracion":"10","Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM25Nc","contaminante":"PM25","HrAveData":23,"concentracion":"7","Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"O3Nc","contaminante":"O3","HrAveData":51,"concentracion":"59","Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"O3Nc","contaminante":"O3","HrAveData":41,"concentracion":"46","Date":"2026-10-14 17:00"}]	//console.log('todo',arrayIMKTodo11.length);
+	console.log('todo');
+	var arrayIMKTodo1 = [{"Estacion":"centro","Parameter":"CONc","HrAveData":10,"Date":"2026-10-14 17:00"},{"Estacion":"centro","Parameter":"NO2Nc","HrAveData":3,"Date":"2026-10-14 17:00"},{"Estacion":"centro","Parameter":"O3Nc","HrAveData":38,"Date":"2026-10-14 17:00"},{"Estacion":"centro","Parameter":"PM10Nc","HrAveData":30,"Date":"2026-10-14 17:00"},{"Estacion":"centro","Parameter":"PM25Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"centro","Parameter":"SO21Nc","HrAveData":3,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"CONc","HrAveData":6,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"NO2Nc","HrAveData":2,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"O3Nc","HrAveData":17,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM10Nc","HrAveData":16,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM25Nc","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"SO21Nc","HrAveData":10,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"CONc","HrAveData":13,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"NO2Nc","HrAveData":2,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"O3Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"PM10Nc","HrAveData":18,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"PM25Nc","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"SO21Nc","HrAveData":9,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"CONc","HrAveData":13,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"NO2Nc","HrAveData":7,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"O3Nc","HrAveData":16,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM10Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM25Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"SO21Nc","HrAveData":5,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"CONc","HrAveData":12,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"NO2Nc","HrAveData":2,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"O3Nc","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM10Nc","HrAveData":19,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM25Nc","HrAveData":57,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"SO21Nc","HrAveData":6,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"CONc","HrAveData":8,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"NO2Nc","HrAveData":4,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"O3Nc","HrAveData":42,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"PM10Nc","HrAveData":40,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"PM25Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"SO21Nc","HrAveData":8,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"CONc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"NO2Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"O3Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"PM10Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"PM25Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"SO21Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"CONc","HrAveData":7,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"NO2Nc","HrAveData":1,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"O3Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM10Nc","HrAveData":28,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM25Nc","HrAveData":43,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"SO21Nc","HrAveData":6,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"CONc","HrAveData":10,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"NO2Nc","HrAveData":5,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"O3Nc","HrAveData":24,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM10Nc","HrAveData":34,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM25Nc","HrAveData":51,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"SO21Nc","HrAveData":5,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"CONc","HrAveData":7,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"NO2Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"O3Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM10Nc","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM25Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"SO21Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"CONc","HrAveData":9,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"NO2Nc","HrAveData":4,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"O3Nc","HrAveData":36,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM10Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM25Nc","HrAveData":40,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"SO21Nc","HrAveData":4,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"CONc","HrAveData":14,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"NO2Nc","HrAveData":5,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"O3Nc","HrAveData":18,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM10Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM25Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"SO21Nc","HrAveData":5,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"CONc","HrAveData":7,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"NO2Nc","HrAveData":2,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"O3Nc","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM10Nc","HrAveData":20,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM25Nc","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"SO21Nc","HrAveData":8,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"CONc","HrAveData":10,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"NO2Nc","HrAveData":3,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"O3Nc","HrAveData":51,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"PM10Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"PM25Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"SO21Nc","HrAveData":7,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"CONc","HrAveData":13,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"NO2Nc","HrAveData":2,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"O3Nc","HrAveData":41,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"PM10Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"PM25Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"SO21Nc","HrAveData":7,"Date":"2026-10-14 17:00"}] 
+	//console.log(arrayIMKTodo1);
+	var arrayIMKTodo2 = [{"Estacion":"centro","Parameter":"PM10Nc","HrAveData":30,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM10Nc","HrAveData":16,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"PM10Nc","HrAveData":18,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM10Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM10Nc","HrAveData":19,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"PM10Nc","HrAveData":40,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM10Nc","HrAveData":28,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM10Nc","HrAveData":34,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM10Nc","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM10Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM10Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM10Nc","HrAveData":20,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"PM10Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"PM10Nc","HrAveData":29,"Date":"2026-10-14 17:00"}]	//console.log('PM10',arrayIMKTodo2);	
+	var arrayIMKTodo3 = [{"Estacion":"centro","Parameter":"PM25Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM25Nc","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"PM25Nc","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM25Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM25Nc","HrAveData":57,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"PM25Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM25Nc","HrAveData":43,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM25Nc","HrAveData":51,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM25Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM25Nc","HrAveData":40,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM25Nc","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM25Nc","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"PM25Nc","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"PM25Nc","HrAveData":33,"Date":"2026-10-14 17:00"}] 
+	//console.log('PM25',arrayIMKTodo3);
+	var arrayIMKTodo4 = [{"Estacion":"centro","Parameter":"O3Nc","HrAveData":38,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"O3Nc","HrAveData":17,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"O3Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"O3Nc","HrAveData":16,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"O3Nc","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"O3Nc","HrAveData":42,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"O3Nc","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"O3Nc","HrAveData":24,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"O3Nc","HrAveData":null,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"O3Nc","HrAveData":36,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"O3Nc","HrAveData":18,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"O3Nc","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"O3Nc","HrAveData":51,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"O3Nc","HrAveData":41,"Date":"2026-10-14 17:00"}] 
+	//console.log('O3',arrayIMKTodo4);
+	var arrayIMKTodo5 = [{"Estacion":"centro","Parameter":"PM10 ","HrAveData":"32","Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM10 ","HrAveData":"17","Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"PM10 ","HrAveData":"21","Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM10 ","HrAveData":"44","Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM10 ","HrAveData":"15","Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"PM10 ","HrAveData":"46","Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM10 ","HrAveData":"31","Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM10 ","HrAveData":"38","Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM10 ","HrAveData":"Null","Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM10 ","HrAveData":"35","Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM10 ","HrAveData":"36","Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM10 ","HrAveData":"26","Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"PM10 ","HrAveData":"46","Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"PM10 ","HrAveData":"32","Date":"2026-10-14 17:00"}] 
+	var arrayIMKTodo6 = [{"Estacion":"centro","Parameter":"PM2.5","HrAveData":"14","Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM2.5","HrAveData":"8","Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"PM2.5","HrAveData":"10","Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM2.5","HrAveData":"13","Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM2.5","HrAveData":"Null","Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"PM2.5","HrAveData":"11","Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM2.5","HrAveData":"15","Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM2.5","HrAveData":"19","Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM2.5","HrAveData":"Null","Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM2.5","HrAveData":"12","Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM2.5","HrAveData":"15","Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM2.5","HrAveData":"9","Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"PM2.5","HrAveData":"11","Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"PM2.5","HrAveData":"11","Date":"2026-10-14 17:00"}] 
+	var arrayIMKTodo7 = [{"Estacion":"centro","Parameter":"O3   ","HrAveData":"43","Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"O3   ","HrAveData":"19","Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"O3   ","HrAveData":"33","Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"O3   ","HrAveData":"17","Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"O3   ","HrAveData":"30","Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"O3   ","HrAveData":"47","Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"O3   ","HrAveData":"33","Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"O3   ","HrAveData":"27","Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"O3   ","HrAveData":"0","Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"O3   ","HrAveData":"42","Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"O3   ","HrAveData":"20","Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"O3   ","HrAveData":"25","Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"O3   ","HrAveData":"59","Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"O3   ","HrAveData":"46","Date":"2026-10-14 17:00"}]
+
+
+	
+	//var arrayIMKTodo8 = [{"Estacion":"centro","Parameter":"SO2  ","HrAveData":"2","Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"SO2  ","HrAveData":"7","Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"SO2  ","HrAveData":"6","Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"SO2  ","HrAveData":"3","Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"SO2  ","HrAveData":"4","Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"SO2  ","HrAveData":"6","Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"SO2  ","HrAveData":"4","Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"SO2  ","HrAveData":"4","Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"SO2  ","HrAveData":"0","Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"SO2  ","HrAveData":"3","Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"SO2  ","HrAveData":"4","Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"SO2  ","HrAveData":"6","Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"SO2  ","HrAveData":"5","Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"SO2  ","HrAveData":"5","Date":"2026-10-14 17:00"}]     //console.log('PM25',[{"Estacion":"centro","Parameter":"O3   ","HrAveData":"43","Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"O3   ","HrAveData":"19","Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"O3   ","HrAveData":"33","Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"O3   ","HrAveData":"17","Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"O3   ","HrAveData":"30","Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"O3   ","HrAveData":"47","Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"O3   ","HrAveData":"33","Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"O3   ","HrAveData":"27","Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"O3   ","HrAveData":"0","Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"O3   ","HrAveData":"42","Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"O3   ","HrAveData":"20","Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"O3   ","HrAveData":"25","Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"O3   ","HrAveData":"59","Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"O3   ","HrAveData":"46","Date":"2026-10-14 17:00"}]);
+	
+	var arrayIMKTodo = [{"Estacion":"centro","Parameter":"O3","HrAveData":38,"Date":"2026-10-14 17:00"},{"Estacion":"este","Parameter":"PM2.5","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"noreste","Parameter":"O3","HrAveData":29,"Date":"2026-10-14 17:00"},{"Estacion":"noreste2","Parameter":"PM2.5","HrAveData":37,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste","Parameter":"PM2.5","HrAveData":57,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste2","Parameter":"O3","HrAveData":42,"Date":"2026-10-14 17:00"},{"Estacion":"noroeste3","Parameter":"PM10","HrAveData":-1,"Date":"2026-10-14 17:00"},{"Estacion":"norte","Parameter":"PM2.5","HrAveData":43,"Date":"2026-10-14 17:00"},{"Estacion":"norte2","Parameter":"PM2.5","HrAveData":51,"Date":"2026-10-14 17:00"},{"Estacion":"sur","Parameter":"PM10","HrAveData":27,"Date":"2026-10-14 17:00"},{"Estacion":"sureste","Parameter":"PM2.5","HrAveData":40,"Date":"2026-10-14 17:00"},{"Estacion":"sureste2","Parameter":"PM2.5","HrAveData":33,"Date":"2026-10-14 17:00"},{"Estacion":"sureste3","Parameter":"PM2.5","HrAveData":23,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste","Parameter":"O3","HrAveData":51,"Date":"2026-10-14 17:00"},{"Estacion":"suroeste2","Parameter":"O3","HrAveData":41,"Date":"2026-10-14 17:00"}] 
+	//console.log('Max', arrayIMKTodo);
+	//cuadro de leyenda de Ã­ndice de calidad del aire   C0C0C0
+    function getColor(d) {
+        return d > 200  ? 5:  //purpura
+               d > 150  ? 4:  //rojo
+               d > 100  ? 3:  //naranja
+               d > 50   ? 2:  //amarillo
+               d >= 0    ? 1:  //verde
+                          0;
+    }
+
+    function getLabel(d) {
+        return d > 200  ? 'Extremadamente mala':
+               d > 150  ? 'Muy mala':
+               d > 100  ? 'Mala':
+               d > 50   ? 'Regular':
+               d >= 0    ? 'Buena':
+                          'Mantenimiento';
+    }
+ var iconURLPrefix = 'marcadores/drawable-hdpi/';
+	
+ var iconos = [
+        iconURLPrefix + 'gray_marker2.png',
+        iconURLPrefix + 'green_marker2.png',
+        iconURLPrefix + 'yellow_marker2.png',
+        iconURLPrefix + 'orange_marker2.png',
+        iconURLPrefix + 'red_marker2.png',
+		iconURLPrefix + 'purple_marker2.png'
+    ]	
+	
+	var iconosLength = iconos.length;
+/*
+	 var locations = [
+	['CENTRO',25.67602,-100.335847,4,'Obispado','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_CE', 'centro'],
+	['SURESTE',25.66827,-100.249580,2,'Pastora','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_SE','sureste'],
+	['NORESTE',25.74543,-100.255020,3,'San NicolÃ¡s','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_NE','noreste'],
+	['NOROESTE',25.75712,-100.365974,5,'San BernabÃ©','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_NO','noroeste'],
+	['SUROESTE',25.675674,-100.465018,6,'Santa Catarina','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_SO','suroeste'],
+	['NOROESTE 2',25.783456,-100.585874,7,'GarcÃ­a','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_NO2','noroeste2'],
+	['NORTE',25.80194,-100.343056,8,'Escobedo','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_NORTE','norte'],
+	['NORESTE 2',25.77722,-100.188055,1,'Apodaca','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_NE2','noreste2'],	
+	['SURESTE 2',25.64611,-100.095555,9,'JuÃ¡rez','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_SE2','sureste2'],
+	['SUROESTE 2',25.66528,-100.412778,10,'San Pedro','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_SO2','suroeste2'],
+	['SURESTE 3',25.600874,-99.995298,11,'Cadereyta','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_SE3','sureste3'],	
+	['NORTE 2',25.729787,-100.310028,12,'Universidad','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_NORTE2','norte2'],
+	['SUR',25.575383,-100.249371,13,'Pueblo Serena','https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=HRAVEDATA_SUR','sur']
+      ];
+	 */ 
+
+	 /* var locations = [
+	['CENTRO',25.67602,-100.335847,4,'Obispado','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=CENTRO', 'centro'],
+	['SURESTE',25.66827,-100.249580,2,'Pastora','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SURESTE','sureste'],
+	['NORESTE',25.74543,-100.255020,3,'San NicolÃ¡s','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORESTE','noreste'],
+	['NOROESTE',25.75712,-100.365974,5,'San BernabÃ©','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NOROESTE','noroeste'],
+	['SUROESTE',25.675674,-100.465018,6,'Santa Catarina','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SUROESTE','suroeste'],
+	['NOROESTE 2',25.783456,-100.585874,7,'GarcÃ­a','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=GARCIA','noroeste2'],
+	['NORTE',25.80194,-100.343056,8,'Escobedo','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORTE','norte'],
+	['NORESTE 2',25.77722,-100.188055,1,'Apodaca','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORESTE2','noreste2'],	
+	['SURESTE 2',25.64611,-100.095555,9,'JuÃ¡rez','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SURESTE2','sureste2'],
+	['SUROESTE 2',25.66528,-100.412778,10,'San Pedro','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=[SAN Pedro]','suroeste2'],
+	['SURESTE 3',25.600874,-99.995298,11,'Cadereyta','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SURESTE3','sureste3'],	
+	['NORTE 2',25.729787,-100.310028,12,'Universidad','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORTE2','norte2'],
+	['SUR',25.575383,-100.249371,13,'Pueblo Serena','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SUR','sur'],
+	['ESTE',25.7905557,-100.0785278,14,'Pesqueria','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=PESQUERIA','este']
+      ];*/  /*cÃ³digo correcto */
+	  
+	    var locations = [
+	['CENTRO',25.6760139,-100.338553,4,'Monterrey','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=CENTRO', 'centro'],
+	['SURESTE',25.6654972,-100.243653,2,'Guadalupe','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SURESTE','sureste'],
+	['NORESTE',25.74503,-100.25317,3,'San NicolÃ¡s','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORESTE','noreste'],
+	['NOROESTE',25.7629306, -100.369578,5,'Monterrey','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NOROESTE','noroeste'],
+	['SUROESTE',25.6794444,-100.467831,6,'Santa Catarina','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SUROESTE','suroeste'],
+	['NOROESTE 2',25.8004639,-100.585011,7,'GarcÃ­a','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=GARCIA','noroeste2'],
+	['NORTE',25.7988361,-100.327164,8,'Escobedo','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORTE','norte'],
+	['NORESTE 2',25.777475,-100.1882,1,'Apodaca','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORESTE2','noreste2'],	
+	['SURESTE 2',25.646126,-100.095616,9,'JuÃ¡rez','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SURESTE2','sureste2'],
+	['SUROESTE 2',25.665275,-100.412853,10,'San Pedro','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=[SAN Pedro]','suroeste2'],
+	['SURESTE 3',25.6008639,-99.9953028,11,'Cadereyta','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SURESTE3','sureste3'],	
+	['NORTE 2',25.7297587,-100.310019,12,'San NicolÃ¡s','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=NORTE2','norte2'],
+	['SUR',25.6169806,-100.273936,13,'Monterrey','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=SUR','sur'],
+	['ESTE',25.7905833,-100.078411,14,'Pesqueria','http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosimaIcars.php?estacion1=PESQUERIA','este']
+      ];
+	  var image = {
+        url: 'marcadores/drawable-hdpi/gray_marker.png',
+          // This marker is 20 pixels wide by 32 pixels high.
+          //size: new google.maps.Size(50, 87),
+		scaledSize: new google.maps.Size(40, 40), // scaled size
+		origin: new google.maps.Point(0,0), // origin
+		anchor: new google.maps.Point(0, 0) // anchor
+          // The origin for this image is (0, 0).
+          //origin: new google.maps.Point(0, 0),
+          // The anchor for this image is the base of the flagpole at (0, 32).   
+          //anchor: new google.maps.Point(0, 32)
+        };
+function initialize() {
+
+    var myOptions = {
+        //center: new google.maps.LatLng(25.720387, -100.281143),
+		center: new google.maps.LatLng(25.720387, -100.291143),
+        zoom: 11,
+        minZoom: 10,
+        maxZoom: 18,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+
+    };
+    var map = new google.maps.Map(document.getElementById("default"),
+        myOptions);
+
+    setMarkers(map, locations)
+}
+//**************************************************************************************
+function findIndexByKeyValue(obj, key, value)
+{
+	for(var j=0; j < obj.length; j++){
+		if(obj[j].Estacion === value){
+			return j;
+		}
+	}
+	return -1;
+}
+//**************************************************************************************
+
+function setMarkers(map, locations) {
+
+	var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+            '<div id="bodyContent">'+
+            '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+            'sandstone rock formation in the southern part of the '+
+            'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+            'south west of the nearest large town, Alice Springs; 450&#160;km '+
+            '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+            'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+            'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+            'Aboriginal people of the area. It has many springs, waterholes, '+
+            'rock caves and ancient paintings. Uluru is listed as a World '+
+            'Heritage Site.</p>'+
+            '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+            'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+            '(last visited June 22, 2009).</p>'+
+            '</div>'+
+            '</div>';
+
+    var marker, i
+    for (i = 0; i < locations.length; i++) {
+
+		var estacion = locations[i][4]; //nombre estacion MAYUS
+		//***************************************************************************************
+		var estacionMinus = locations[i][6]; //nombre estacion MINUS
+		//***************************************************************************************
+		//var result = estacion.bold();
+        var loan = locations[i][0]   //zona
+        var lat = locations[i][1]   //lat
+        var lon = locations[i][2]   //lon
+        var add = locations[i][3]  //Orden
+		var link = locations[i][5]  //link reporte
+        latlngset = new google.maps.LatLng(lat, lon);
+		//index=-1;
+		//***************************************************************************************
+		var index=findIndexByKeyValue(arrayIMKTodo, 'Estacion', estacionMinus);
+		//***************************************************************************************
+		if( index >=0 )			
+		{	
+			var marker = new google.maps.Marker({
+				map: map, 
+				icon: iconos[getColor(arrayIMKTodo[index].HrAveData)],// image,
+				position: latlngset,
+				url: link
+			});
+			var content = "Estacion: <b>" + estacion + '</b><br>' + "Zona: <b>" + loan +  '</b><br>' + "Contaminante: <b>" + arrayIMKTodo[index].Parameter + '</b><br>' + "Cantidad: <b>" + arrayIMKTodo[index].HrAveData  + "</b>"
+			
+			var infowindow = new google.maps.InfoWindow()
+
+			google.maps.event.addListener(marker, 'mouseover', (function(marker, i, index) {
+			   return function() {
+				 infowindow.setContent('Zona: <b>' + locations[i][0] + '</b><br> EstaciÃ³n: <b>' + locations[i][4] + ' ' + '</b><br> Contaminante: <b>' + arrayIMKTodo[index].Parameter + '</b><br> Valor: <b>' + (arrayIMKTodo[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo[index].HrAveData) + '</b>');
+				 infowindow.open(map, marker);
+			   }
+			 })(marker, i, index));
+			// assuming you also want to hide the infowindow when user mouses-out
+			marker.addListener('mouseout', function() {
+				infowindow.close();
+			});			
+			google.maps.event.addListener(marker, 'click', (function(marker, i) {
+			   return function() {
+				 infowindow.setContent(locations[i][0]);
+				 infowindow.open(map, marker);
+				 window.location.href = this.url;
+			   }
+			 })(marker, i));
+		}
+		else
+		{
+			var marker = new google.maps.Marker({
+				map: map, 
+				icon: iconos[getColor(-1)],// image,
+				position: latlngset,
+				url: link
+			});			
+
+			var infowindow = new google.maps.InfoWindow()
+
+			google.maps.event.addListener(marker, 'mouseover', (function(marker, i, index) {
+			   return function() {
+				   if (index>=0)
+						var value=arrayIMKTodo[index].HrAveData;
+				 infowindow.setContent('Zona: <b>' + locations[i][0] + '</b><br> EstaciÃ³n: <b>' + locations[i][4] + ' ' + ' '  + '</b><br> Contaminante: <b>' + 'Mtto.' + '</b><br> Valor: <b>' +  'Mtto.' + '</b>');
+				 infowindow.open(map, marker);
+			   }
+			 })(marker, i, index));
+			
+			// assuming you also want to hide the infowindow when user mouses-out
+			marker.addListener('mouseout', function() {
+				infowindow.close();
+			});
+		}
+    }	
+	//-----------------------------------------------------------
+		var iconBase = 'https://aire.nl.gob.mx/airemapbing/marcadores/';
+        var icons = {
+          parking: {
+            name: 'Parking',
+            icon: iconBase + 'green_marker.png'
+          }
+        };
+		var legend = document.getElementById('legend0');
+        for (var key in icons) {
+          var type = icons[key];
+          var name = type.name;
+          var icon = type.icon;
+          var div = document.createElement('div');
+          div.innerHTML = '<img src="https://aire.nl.gob.mx/sima2017php/images/logoSDSNL.png" width="150" height="75"> ';// + name;
+          legend.appendChild(div);
+        }	
+		map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend)
+		
+		var legend = document.getElementById('legend2');
+        for (var key in icons) {
+          var type = icons[key];
+          var name = type.name;
+          var icon = type.icon;
+          var div = document.createElement('div');
+          div.innerHTML = '<img src="https://aire.nl.gob.mx/sima2017php/images/L31.png" width="150" height="66"> ';// + name;
+          legend.appendChild(div);
+        }
+        map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);	
+}
+</script>
+
+<!---------------------------->
+<script type='text/javascript'>
+    
+   /* var map, infobox, tooltip;
+    var tooltipTemplate = '<div style="background-color:white;width:380px;padding:2px;text-align:center"><b>{title}</b></div>';
+
+    function GetMap() {
+        map = new Microsoft.Maps.Map('#myMap', {
+            //mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+            center: new Microsoft.Maps.Location(25.67203449, -100.30927419),
+            zoom: 10
+        });
+
+        //Create an infobox to use as a tooltip when hovering.
+        tooltip = new Microsoft.Maps.Infobox(map.getCenter(), {
+            visible: false,
+            showPointer: false,
+            showCloseButton: false,
+            offset: new Microsoft.Maps.Point(0,20)
+        });
+
+        tooltip.setMap(map);
+        
+        //Create an infobox for displaying detailed information.
+        infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+            visible: false
+        });
+
+        infobox.setMap(map);
+                
+         		 
+		//-----------------------------------------------------
+		 var marker, i
+		for (i = 0; i < locations.length; i++) {
+
+			var estacion = locations[i][4]; //nombre estacion MAYUS
+			//***************************************************************************************
+			var estacionMinus = locations[i][6]; //nombre estacion MINUS
+			//***************************************************************************************
+			//var result = estacion.bold();
+			var loan = locations[i][0]   //zona
+			var lat = locations[i][1]   //lat
+			var lon = locations[i][2]   //lon
+			var add = locations[i][3]  //Orden
+			var link = locations[i][5]  //link reporte
+			latlngset = new google.maps.LatLng(lat, lon);
+			//index=-1;
+			//***************************************************************************************
+			var index=findIndexByKeyValue(arrayIMKTodo, 'Estacion', estacionMinus);
+			//***************************************************************************************
+			if( index >=0 )			
+			{	}
+		}
+		//-----------------------------------------------------
+    }
+
+    function pushpinHovered(e) {
+        //Hide the infobox
+        infobox.setOptions({ visible: false });
+
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            tooltip.setOptions({
+                location: e.target.getLocation(),
+                htmlContent: tooltipTemplate.replace('{title}', e.target.metadata.title),
+                visible: true
+            });
+        }
+    }
+
+    function closeTooltip() {
+        //Close the tooltip and clear its content.
+        tooltip.setOptions({
+            visible: false
+        });
+    }*/
+</script>
+ <script type='text/javascript'>
+    //var map;
+	var map, infobox, tooltip;
+	//var tooltipTemplate = '<div style="background-color:white;width:220px;padding:2px;text-align:left"><b>{title}</b></div>';
+	
+	//Define an HTML template for a custom infobox.
+    var tooltipTemplate = '<div class="customInfobox"><div class="title">{title}</div>{description}</div>';
+	
+    function GetMap() {
+        map = new Microsoft.Maps.Map('#myMap', {
+            center: new Microsoft.Maps.Location(25.720387, -100.291143),
+			disableZooming: false, // DESHABILITA EL ZOOM//If this is true, the showZoomButtons is not applied
+			disablePanning: false, //DESHABILITA EL PANEO, MOVER EL MAPA,  SE QUEDA ESTATICO
+            zoom: 11
+        });
+
+		var center = map.getCenter();
+		
+		//Create an infobox to use as a tooltip when hovering.
+        tooltip = new Microsoft.Maps.Infobox(map.getCenter(), {
+            visible: false,
+            showPointer: false,
+            showCloseButton: false,
+            offset: new Microsoft.Maps.Point(0,20)
+        });
+
+        tooltip.setMap(map);
+        
+        //Create an infobox for displaying detailed information.
+        infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+            visible: false
+        });
+		 //Create an infobox that doesn't have a pointer or close button.
+        /*pininfobox = new Microsoft.Maps.Infobox(center, {
+            title: 'Map Center',
+            description: 'This is the center of the map.',
+            showPointer: false, 
+            showCloseButton: false,
+            actions: [{
+                label: 'Handler1',
+                eventHandler: function () {
+                    alert('Handler1');
+                }
+            }, {
+                label: 'Handler2',
+                eventHandler: function () {
+                    alert('Handler2');
+                }
+            }]
+        });*/
+		
+		//pininfobox.setMap(map);
+		
+        
+        var pins = [];
+		//var pins2 = [];
+
+        //Create 3 red pushpins.
+        /*for (var i = 0; i < 3; i++) {
+            //Create a location object of where to place the pushpin on the map.
+            var loc = new Microsoft.Maps.Location(center.latitude, center.longitude + i * 10);
+
+            //Create a pushpin 
+            var pin = new Microsoft.Maps.Pushpin(loc, { color: 'red' });
+
+            pins.push(pin);
+        }*/
+
+        //Create 3 yellow pushpins.
+        /*for (var i = 0; i < 3; i++) {
+            //Create a location object of where to place the pushpin on the map.
+            var loc = new Microsoft.Maps.Location(center.latitude - 10, center.longitude + i * 10);
+
+            //Create a pushpin 
+            var pin = new Microsoft.Maps.Pushpin(loc, { color: 'yellow' });
+
+            pins.push(pin);
+        }*/
+
+		/*-----------------------------------------------------*/
+		 var marker, i
+		for (i = 0; i < locations.length; i++) {
+
+			var estacion = locations[i][4]; //nombre estacion MAYUS
+			//***************************************************************************************
+			var estacionMinus = locations[i][6]; //nombre estacion MINUS
+			//***************************************************************************************
+			//var result = estacion.bold();
+			var loan = locations[i][0]   //zona
+			var lat = locations[i][1]   //lat
+			var lon = locations[i][2]   //lon
+			var add = locations[i][3]  //Orden
+			var link = locations[i][5]  //link reporte
+			
+			//latlngset = new google.maps.LatLng(lat, lon);
+			//index=-1;
+			//***************************************************************************************
+			var index=findIndexByKeyValue(arrayIMKTodo, 'Estacion', estacionMinus);
+			//***************************************************************************************
+			var valornumerico=arrayIMKTodo[index].HrAveData
+			var imgcolor= getColor(arrayIMKTodo11[index].HrAveData);// image,
+			var txtcolor= getLabel(arrayIMKTodo11[index].HrAveData);// texto mensaje,
+			//<a href="http://www.spreadfirefox.com/" onclick="openFFPromotionPopup(); return false;"  target="_blank">Recomendaciones</a>
+			var descriptiontxt = '<a href="' + link + '" target="_self"><img src="marcadores/icars_1.png" height="70px" align="left" style="margin-left:15px;"/></a><br><b>' + txtcolor + '</b><br> <button onclick="myFunction(' + valornumerico + ',\'' + locations[i][4] + '\')">Recomendaciones</button>';
+			var descriptiontxt1 = '<a href="' + link + '" target="_self"><img src="marcadores/iconobarchart48.png" height="35px" align="left" style="margin-right:5px;"/></a><br><b>' + 'Graficas</b><br>';
+			
+			//Create a location object of where to place the pushpin on the map.
+            var loc = new Microsoft.Maps.Location(lat, lon);
+
+            //Create a pushpin 
+			var pin = new Microsoft.Maps.Pushpin(loc, { icon: iconos[imgcolor], anchor: new Microsoft.Maps.Point(12, 39) });
+			var pin1 = new Microsoft.Maps.Pushpin(loc, { icon: iconos[imgcolor], anchor: new Microsoft.Maps.Point(12, 39) });
+            //var pin = new Microsoft.Maps.Pushpin(loc, { color: 'yellow' });
+			
+			var colorI;
+			var riesgo;
+			var unidad;
+			switch (imgcolor) { case 1: var colorI= "rgba(0,228,0,1)"; var riesgo= "bajo"; break; 
+			case 2:var colorI= "rgba(255,255,0,1)"; var riesgo= "moderado"; break; 
+			case 3:var colorI= "rgba(255,126,0,1)"; var riesgo= "alto"; break;
+			case 4:var colorI= "rgba(255,0,0,1)"; var riesgo= "muy alto"; break;
+			case 5:var colorI= "rgba(143,63,151,1)"; var riesgo= "extremadamente alto"; break;
+			default:colorI= "gray"; break;};
+			
+			var contam= arrayIMKTodo11[index].contaminante;// texto mensaje,
+			//console.log('contam ', contam);
+		 	switch (contam) { case "PM10": var unidad="ugr/m3"; break; 
+			case 'PM25': var unidad="ugr/m3"; break;
+			case 'O3': var unidad="ppb"; break;
+			case 'NO2': var unidad="ppb"; break;
+			case 'SO2': var unidad="ppb"; break;
+			case 'CO': var unidad="ppm"; break;
+			default:unidad= "ND"; break;}; 
+			//console.log('color',colorI, 'imgcolor', imgcolor);
+			//var link1='https://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiarioSimaI_Icars.php?estacion1='+locations[i][4]+'&parametro1='+arrayIMKTodo5[index].Parameter;
+			
+		/* pin.metadata = {
+                         title: 'Zona: ' + locations[i][0] + '<br>Estacion: ' + locations[i][4] + '<br>Contaminante: ' + ' <br><div style="background-color:'+colorI+'; border:1px solid #e9b3b3; text-align: center;"><h3 style="color:Black;"> ' + arrayIMKTodo11[index].contaminante +':'+ (arrayIMKTodo11[index].concentracion === -1 ? 'Mtto.' : arrayIMKTodo11[index].concentracion)+ '<br>Indice Aire y Salud: '+txtcolor+ '<br>Riesgo: '+riesgo+'</h3></div><br>'
+						 //title: 'Zona: ' + locations[i][0] + '<br>Estacion: ' + locations[i][4] + '<br>Contaminante: ' + ' <br><div style="background-color:'+colorI+'; border:1px solid #e9b3b3; text-align: center;"><h3 style="color:Black;"> ' + arrayIMKTodo[index].Parameter +'<br>Indice Aire y Salud: '+txtcolor+ '<br>Riesgo: '+riesgo+'</h3></div><br>'
+						 //+'INDICE AIRE y SALUD'+'<br>'+'PM10' + ' : '  + (arrayIMKTodo2[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo2[index].HrAveData)+' - '+ 'PM2.5' + ' : '  + (arrayIMKTodo3[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo3[index].HrAveData)+' - '+ 'O3' + ' : '  + (arrayIMKTodo4[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo4[index].HrAveData)+ '<br>'+descriptiontxt1
+						 +descriptiontxt1
+						 +'<br>CONCENTRACION HORARIA<br>'+ 'PM10' +' : '  + (arrayIMKTodo5[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo5[index].HrAveData)+' ugr/m3 - '+ 'PM2.5' + ' : ' + (arrayIMKTodo6[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo6[index].HrAveData)+' ugr/m3 - '+ 'O3' + ' : '+ (arrayIMKTodo7[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo7[index].HrAveData)+' ppb - ',// + '<br><a href="' + link + '" target="_blank">Reporte</a>' ,
+                         description:  descriptiontxt
+                };
+ */
+			pin.metadata = {
+                         //title: 'Zona: ' + locations[i][0] + '<br>Estacion: ' + locations[i][4] + '<br>Contaminante: ' + ' <br><div style="background-color:'+colorI+'; border:1px solid #e9b3b3; text-align: center;"><h3 style="color:Black;"> ' + arrayIMKTodo[index].Parameter +':'+ (arrayIMKTodo[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo[index].HrAveData)+ '<br>Indice Aire y Salud: '+txtcolor+ '<br>Riesgo: '+riesgo+'</h3></div><br>'
+						 title: 'Zona: ' + locations[i][0] + '<br>Municipio: ' + locations[i][4] + '<br>INDICE AIRE y SALUD ' + ' <br><div style="background-color:'+colorI+'; border:1px solid #e9b3b3; text-align: center;"><h3 style="color:Black;"> ' + arrayIMKTodo11[index].contaminante+':'+ (arrayIMKTodo11[index].concentracion === -1 ? 'Mtto.' : arrayIMKTodo11[index].concentracion)+' '+unidad+'<br>Indice Aire y Salud: '+txtcolor+ '<br>Riesgo: '+riesgo+'</h3></div><br>'
+						 //+'INDICE AIRE y SALUD'+'<br>'+'PM10' + ' : '  + (arrayIMKTodo2[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo2[index].HrAveData)+' - '+ 'PM2.5' + ' : '  + (arrayIMKTodo3[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo3[index].HrAveData)+' - '+ 'O3' + ' : '  + (arrayIMKTodo4[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo4[index].HrAveData)+ '<br>'+descriptiontxt1
+						 +descriptiontxt1,
+						 //+'<br>CONCENTRACION HORARIA<br>'+ 'PM10' +' : '  + (arrayIMKTodo5[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo5[index].HrAveData)+' ugr/m3 - '+ 'PM2.5' + ' : ' + (arrayIMKTodo6[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo6[index].HrAveData)+' ugr/m3 - '+ 'O3' + ' : '+ (arrayIMKTodo7[index].HrAveData === -1 ? 'Mtto.' : arrayIMKTodo7[index].HrAveData)+' ppb - ',// + '<br><a href="' + link + '" target="_blank">Reporte</a>' ,
+                         description:  descriptiontxt
+                };
+			
+			
+			//Add a mouse events to the pushpin.
+            //Microsoft.Maps.Events.addHandler(pin, 'mouseover', pushpinHovered);
+            Microsoft.Maps.Events.addHandler(pin, 'mouseout', closeTooltip);
+			//Add mouse events to the pushpin.
+			//Microsoft.Maps.Events.addHandler(pin, 'click', function () { highlight('pushpinClick'); });	
+			//Add a click event handler to the pushpin.
+			//Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+			Microsoft.Maps.Events.addHandler(pin, 'click', pushpinHovered);
+            pins.push(pin);
+			
+			if( index >=0 )			
+			{	}
+		}
+		/*-----------------------------------------------------*/
+		
+        //Add the pushpins to the map
+        map.entities.push(pins);
+		
+		//Create an infobox for displaying detailed information.
+		
+
+		/*var infoboxTemplate1 = '<div id="infoboxText" style="background-color:rgba(0,0,0,0.5); border-style:solid; border-width:medium; border-color:DarkOrange; min-height:200px; width: 300px;">' +
+    '<b id="infoboxTitle" style="position: absolute; top: 10px; left: 10px; width: 220px;">{title}</b>' +
+    '<a id="infoboxDescription" style="position: absolute; top: 10px; left: 10px; width: 220px;"><img src="marcadores/icars_1.png" height="100px" align="left" style="margin-left:15px;"/></a></div>';
+var infobox1 = new Microsoft.Maps.Infobox(top, { htmlContent: infoboxTemplate1.replace('{title}', 'myTitle').replace('{description}', 'myDescription'), visible:true });
+infobox1.setMap(map);*/
+		
+        infobox.setMap(map);
+    }
+	function pushpinHovered(e) {
+        //Hide the infobox
+        infobox.setOptions({ visible: false });
+
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            tooltip.setOptions({
+                location: e.target.getLocation(),
+				htmlContent: tooltipTemplate.replace('{title}', e.target.metadata.title).replace('{description}',e.target.metadata.description), 
+				//htmlContent: tooltipTemplate.replace('{title}', e.target.metadata.title),
+                visible: true
+            });
+        }
+    }
+
+    function closeTooltip() {
+        //Close the tooltip and clear its content.
+        tooltip.setOptions({
+            visible: false
+        });
+    }
+	
+	function highlight(id) {
+        //Highlight the mouse event div to indicate that the event has fired.
+        document.getElementById(id).style.background = 'LightGreen';
+
+        //Remove the highlighting after a second.
+        setTimeout(function () { document.getElementById(id).style.background = 'white'; }, 1000);
+    }
+	
+	function pushpinClicked(e) {
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                description: e.target.metadata.description,
+                visible: true
+            });
+        }
+    }
+//AgxpLcvx0sd5C9rP4b9FbhEkrzHAUEQMUO2Ex1-sCOQSOTzaPqKhv0Y1r0CNrBmB
+    </script>
+	<!--<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AjJ7bU14xpvZP23U-1UbmUhDHzaBQs5njWhPH7VfY0TKrdxep8l1crc2JPjqiRYv' async defer></script>-->
+	<!--<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AkMWLcb5Cq6LL9RXo4F4wIgRZaoQde_fY_rZW-InEfWj2PqPw4IJGtijrwUmH4rf' async defer></script>-->
+	<!--<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AkMWLcb5Cq6LL9RXo4F4wIgRZaoQde_fY_rZW-InEfWj2PqPw4IJGtijrwUmH4rf' async defer></script>-->
+	<!--<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AkOn24eIVjTKr66n0dqWaVzzvC3iqumKRaJo6iicTcNn43DwOyqsFIMVzqzet2E6' async defer></script>-->
+		<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AgRfpnJ3EAOS6acz6tUMQMZ8M0tLhHLBlP-S07Vk0eh8Vb_0iuGYdvcw96OXf9hM' async defer></script>
+
+
+<!---------------------------->
+ <style>
+        /* CSS styles used by custom infobox template */
+        .customInfobox {
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            max-width: 200px;
+            border-radius: 10px;
+            padding: 5px;
+            font-size:12px;
+            pointer-events:auto !important;
+			font-family:Tw Cen MT;
+        }
+
+            .customInfobox .title {
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 5px;
+				font-family:Tw Cen MT;
+            }
+    </style>
+	
+<script>
+/*function myFunction() {
+  window.open("https://www.w3schools.com", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+}*/
+var abierta=false; 
+function myFunction(valor,estacion) {
+  //var myWindow = window.open("", "myWindow", "width=600px,height=400px");
+var iMyWidth;
+var iMyHeight;
+
+//half the screen width minus half the new window width (plus 5 pixel borders).
+iMyWidth = (window.screen.width/3) - (75 + 10);
+//half the screen height minus half the new window height (plus title and status bars).
+iMyHeight = (window.screen.height/3) - (100 + 50);
+
+if(window.opener) {window.close();}
+//Open the window.
+var myWindow = window.open("","Recomendaciones","status=no,height=650,width=400,resizable=no,left=" + iMyWidth + ",top=" + iMyHeight + ",screenX=" + iMyWidth + ",screenY=" + iMyHeight + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
+myWindow.document.getElementsByTagName('body')[0].innerHTML = '';  
+myWindow.document.write('<title>' + estacion.trim() + '</title>');
+  //var myWindow = window.open("https://www.w3schools.com", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+  if (valor >= 0 && valor <= 50) 
+  {  
+    myWindow.document.write("<h2>Riesgos a la salud</h2><h3>Ninguno</h3><h2>Recomendaciones</h2><ul>"
+    +"<h3>Grupos sensible</h3>Disfruta las actividades al aire libre<br/>"
+	+"<h3>Para toda la PoblaciÃ³n</h3>Disfruta las actividades al aire libre<br/>"
+	+"<h3>DescripciÃ³n del riesgo</h3>Se considera que el riesgo es mÃ­nimo o nulo.<ul>"
+	+ "<li><img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/app_verde.png' height='500px' align='left' style='margin-right:5px;'/><br></li>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/escuela_verde.png' height='250px' align='left' style='margin-right:5px;'/>"
+	 + "<li>   </li>" 
+    + "<li>Puedes realizar actividades al aire libre</li>" 
+    + "<li>Puedes ejercitarte al aire libre</li>" 
+    + "<li>Sin riesgo para grupos sensibles</li>" 
+  	+ "</ul>" 	
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/ventilacion_permitida85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/entrenamiento_permitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/outdoor_permitido_B85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/grupos_sensibles_permitido85.png' height='85px' align='left' style='margin-right:5px;'/>");
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/exercise.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/outdoors.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/verde/window.png' height='85px' align='left' style='margin-right:5px;'/>");
+  }
+  if (valor >= 51 && valor <= 100) 
+  {  
+    myWindow.document.write("<h2>Riesgos a la salud</h2><h2>Recomendaciones</h2><ul>"
+	+"<h3>Grupos sensibles</h3>Considera reducir las actividades fÃ­sicas vigorosas al aire libre.<br/>"
+	+"<h3>Para toda la PoblaciÃ³n</h3>Disfruta las actividades al aire libre.<br/>"
+	+"<h3>DescripciÃ³n del riesgo</h3>Ozono (O3). Las personas sensibles pueden experimentar sÃ­ntomas respiratorios (asmÃ¡ticos).<br/>PartÃ­culas suspendidas iguales o menores a 10 micrÃ³metros (PM10) y partÃ­culas suspendidas iguales o menores a 2.5 micrÃ³metros (PM2.5). Posible agravamiento de enfermedad pulmonar y cardiaca en personas con enfermedad cardiopulmonar y adultos mayores.<ul>"
+
+    + "</ul>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/app_amarillo.png' height='500px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/ventilacion_permitida85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/entrenamiento_permitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/outdoor_permitido_B85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/grupos_sensibles_permitido85.png' height='85px' align='left' style='margin-right:5px;'/>");
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/exercise.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/amarillo/outdoors.png' height='85px' align='left' style='margin-right:5px;'/>");
+  }
+  if (valor >= 101 && valor <= 150) 
+  {  
+    myWindow.document.write("<h2>Riesgos a la salud</h2><h2>Recomendaciones</h2><ul>"
+	+"<h3>Grupos sensibles</h3>Evita las actividades fÃ­sicas (tanto moderadas como vigorosas) al aire libre.<br/>"
+	+"<h3>Para toda la PoblaciÃ³n</h3>Reduce las actividades fÃ­sicas vigorosas al aire libre.<br/>"
+	+"<h3>DescripciÃ³n del riesgo</h3>Para todos los contaminantes criterio existe probabilidad de disminuciÃ³n en la capacidad pulmonar en personas sanas.<br/>"
+    +"Incremento en la probabilidad de apariciÃ³n de sÃ­ntomas respiratorios en personas sensibles (niÃ±os, ancianos, personas con deficiencias nutricionales, personas que realizan actividades en exteriores, ciclistas, trabajadores).<br/>"
+    +"En personas con enfermedades respiratorias (EPOC, asma) y cardiacas (angina de pecho) hay aumento en la probabilidad de agravamiento y disminuciÃ³n en la tolerancia de la actividad fÃ­sica, asÃ­ como mayor probabilidad de muertes prematuras en personas con enfermedad cardiaca o pulmonar.<ul>"
+ 
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/app_naranja.png' height='500px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/ventilacion_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/entrenamiento_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/outdoor_limitado_B85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/grupos_sensibles_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/enfermedades_cardiovasculares_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/fogatas_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>");
+   // + "</ul><img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/exercise_limit.png' height='85px' align='left' style='margin-right:5px;'/> "
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/outdoors_limit.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/naranja/sensible_limit.png' height='85px' align='left' style='margin-right:5px;'/>");
+  }
+  if (valor >= 151 && valor <= 200) 
+  {  
+    myWindow.document.write("<h2>Riesgos a la salud</h2><h2>Recomendaciones</h2><ul>"
+	+"<h3>Grupos sensibles</h3>No realices actividades al aire libre. Acudir al mÃ©dico si se presentan sÃ­ntomas respiratorios o cardiacos.<br/>"
+	+"<h3>Para toda la PoblaciÃ³n</h3>Evita las actividades fÃ­sicas moderadas y vigorosas al aire libre..<br/>"
+	+"<h3>DescripciÃ³n del riesgo</h3>Para todos los contaminantes criterio, mayor probabilidad de presencia de sÃ­ntomas respiratorios en poblaciÃ³n general.<br/> Agravamiento de sÃ­ntomas respiratorios en poblaciones sensibles (niÃ±os, adultos mayores, personas que trabajan en exteriores, ciclistas) y en personas con enfermedad pulmonar (EPOC y asma).<br/> Incremento en sÃ­ntomas cardiovasculares, como dolor precordial, en personas enfermas del corazÃ³n, asÃ­ como mayor probabilidad de muertes prematuras en personas con enfermedad cardiaca o pulmonar.<ul>"
+    + "<li>                  </li>" 
+    + "<li>Evita ejercitarte al aire libre </li>" 
+    + "<li>MantÃ©n cerradas puertas y ventanas</li>" 
+    + "<li>Grupos sensibles permanecer en interiores</li>" 
+    + "<li>Acude al mÃ©dico si presentas sÃ­ntomas de enfermedades respiratorias o cardiovasculares</li>" 
+    + "<li>Limita el uso de vehÃ­culos automotores</li>"
+    + "<li>Evita hacer fogatas y el uso de combustibles sÃ³lidos (carbÃ³n y leÃ±a)</li>" 
+    + "<li>Si eres fumador, limita el consumo del tabaco</li>" 
+    + "<li>Permanecer atento a la informaciÃ³n de la calidad del aire </li>" 
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/ventilacion_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/entrenamiento_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/outdoor_nopermitido_B85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/vehiculos_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/fumar_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/grupos_sensibles_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/enfermedades_cardiovasculares_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/fogatas_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/combustibles_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>");
+   // + "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/car_limit.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/outdoors_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/exercise_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/fuel_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/sensible_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/smoking_limit.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/heart_limit.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/closed_windows.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/rojo/asthma.png' height='85px' align='left' style='margin-right:5px;'/>");
+  }
+  if (valor >= 201 && valor <= 500) 
+  {  
+    myWindow.document.write("<h2>Riesgos a la salud</h2><h2>Recomendaciones</h2><ul>"
+	+"<h3>Grupos sensibles</h3>Permanece en espacios interiores. Acudir al mÃ©dico si se presentan sÃ­ntomas respiratorios o cardiacos.<br/>"
+	+"<h3>Para toda la PoblaciÃ³n</h3>Permanece en espacios interiores. Acudir al mÃ©dico si se presentan sÃ­ntomas respiratorios o cardiacos.<br/>"
+	+"<h3>DescripciÃ³n del riesgo</h3>Para todos los contaminantes criterio, incremento en la probabilidad de sÃ­ntomas severos respiratorios en poblaciÃ³n general.<br/>"
+    +"Serios efectos respiratorios y agravamiento de sÃ­ntomas en personas sensibles (niÃ±os, adultos mayores, persona con deficiencias nutricionales) y en personas con enfermedad pulmonar (asma y EPOC).<br/> Agravamiento de sÃ­ntomas cardiovasculares en enfermos del corazÃ³n (como angina de pecho) e incremento en la probabilidad de muerte prematura en personas con enfermedad pulmonar y cardiaca.<ul>"
+    + "<li>Suspende tus actividades al aire libre </li>" 
+    + "<li>Suspende todo ejercicio al aire libre </li>" 
+    + "<li>MantÃ©n cerradas puertas y ventanas</li>" 
+    + "<li>Grupos sensibles permanecer en interiores</li>" 
+    + "<li>Acude al mÃ©dico si presentas sÃ­ntomas de enfermedades respiratorias o cardiovasculares</li>" 
+    + "<li>No uses vehÃ­culos automotores a menos que sea necesario</li>"
+    + "<li>No hacer fogatas ni usar combustible sÃ³lido (carbÃ³n y leÃ±a).</li>" 
+    + "<li>No fumar</li>" 
+    + "<li>Permanecer atento a la informaciÃ³n de la calidad del aire </li>" 
+    + "</ul> "
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/ventilacion_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/entrenamiento_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/outdoor_nopermitido_B85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/vehiculos_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/enfermedades_cardiovasculares_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "</ul> <img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/fumar_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/grupos_sensibles_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/fogatas_nopermitido85.png' height='85px' align='left' style='margin-right:5px;'/>"
+	+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/combustibles_limitado85.png' height='85px' align='left' style='margin-right:5px;'/>");
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/exercise_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/fuel_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/sensible_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/smoking_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/heart_limit.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/closed_windows.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/car_no.png' height='85px' align='left' style='margin-right:5px;'/>"
+	//+ "<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/outdoors_no.png' height='85px' align='left' style='margin-right:5px;'/>");
+  }
+  if (valor == null || valor < 0) 
+  {  
+    myWindow.document.write("Estacion en mantenimiento.");
+  }
+  //myWindow.opener.document.write("<p>This is the source window!</p>");
+}
+</script>
+
+
+
+<!--ESTILO DEL MODAL ---------------------------->
+<!--<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 50px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+</style>-->
+</head>
+<!--<body onload="initialize()">-->
+<body >
+<!--<div id="default" style="width:100%; height:600px" class="templatemo-contact-map"></div>-->
+<!--<div id="legend0"></div>--><!--HABILITAR SI QUEREMOS QUE APAREZCA LOGO-->
+<!--<div id="legend2"></div>--><!--HABILITAR SI QUEREMOS QUE APAREZCA LOGO-->
+	<div id="myMap" style="position:relative;width:100%;height:100%;"></div>
+
+	<!--<div id="pushpinClick">click</div>
+    <div id="pushpinMousedown">mousedown</div>
+    <div id="pushpinMouseout">mouseout</div>
+    <div id="pushpinMouseover">mouseover</div>
+    <div id="pushpinMouseup">mouseup</div>-->
+	
+	<!--ABRE MODAL CON BOTON/PROBANDO -->
+	<!--<button id="myBtn">Open Modal</button>-->
+
+	<!-- The Modal / PROBANDO MODAL -->
+	<!--<div id="myModal" class="modal">		
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close">&times;</span>
+				<h3>Estacion</h3>
+			</div>
+			<div class="modal-body">
+				<p>RIESGOS</p>
+				Efectos graves a la salud de la poblaciÃ³n en general. Se pueden presentar complicaciones en niÃ±os, adultos mayores y personas con enfermedades cardiovasculares o respiratorias.
+				<p>RECOMENDACIONES</p>
+				" Suspende tus actividades al aire libre " <BR>
+				" Suspende todo ejercicio al aire libre "<BR>
+				â MantÃ©n cerradas puertas y ventanasâ<BR>
+				"Grupos sensibles permanecer en interiores"<BR>
+				âAcude inmediatamente al mÃ©dico, o solicita servicio de emergencia si presentas sÃ­ntomas de enfermedades respiratorias o cardiovascularesâ<BR>
+				âNo uses vehÃ­culos automotores a menos que sea necesarioâ<BR>
+				âNo hacer fogatas ni usar combustible sÃ³lido (carbÃ³n y leÃ±a)â.<BR>
+				âNo fumarâ<BR>
+				âPermanecer atento a la informaciÃ³n de la calidad del aireâ<BR>
+				âNo hacer fogatas ni usar combustible sÃ³lido (carbÃ³n y leÃ±a)â.<BR>
+				âNo fumarâ<BR>
+				âPermanecer atento a la informaciÃ³n de la calidad del aireâ<BR>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/exercise_no.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/fuel_no.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/sensible_no.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/smoking_no.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/heart_limit.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/closed_windows.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/car_no.png' height='85px' align='left' style='margin-right:5px;'/>
+				<img src='https://aire.nl.gob.mx/airemapbing/IconoCatalogo/magenta/outdoors_no.png' height='85px' align='left' style='margin-right:5px;'/>
+			</div>
+			<div class="modal-footer">
+				<h3><br></h3>
+			</div>
+		</div>
+
+	</div>-->
+	<!-- CONTROLA EVENTOS DEL MODAL -->
+	<script>
+	// Get the modal
+	var modal = document.getElementById('myModal');
+	// Get the button that opens the modal
+	var btn = document.getElementById("myBtn");
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+	// When the user clicks the button, open the modal
+	btn.onclick = function() {
+		modal.style.display = "block";
+	}
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	}
+	</script>
+</body>
+</html>

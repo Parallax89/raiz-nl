@@ -74,7 +74,37 @@
     if (window.RAIZ_API) return window.RAIZ_API;
     return ['localhost', '127.0.0.1'].indexOf(location.hostname) >= 0 ? 'http://127.0.0.1:8001' : null;
   })();
+  /* Tira deslizante del hero: ejemplos del demo + compromisos reales de este navegador */
+  var EJEMPLOS = [
+    { foto: 'img/donadores/d1.jpg', pos: 'center 15%', arboles: 250 },
+    { foto: 'img/donadores/d2.jpg', pos: 'center 35%', arboles: 100 },
+    { foto: 'img/donadores/d3.png', pos: 'center 25%', arboles: 500 },
+    { foto: 'img/donadores/d4.png', pos: 'center 40%', arboles: 50 }
+  ];
+  function iniciales(c) {
+    var t = String(c.nombre || c.usuario || '').trim();
+    if (!t) return '🌳';
+    var p = t.replace(/^@/, '').split(/\s+/);
+    return ((p[0] || '')[0] + ((p[1] || '')[0] || '')).toUpperCase();
+  }
+  function pintarDonadores(lista) {
+    var reales = lista.slice().sort(function (a, b) { return String(b.fecha).localeCompare(String(a.fecha)); }).slice(0, 12);
+    var items = reales.map(function (c) {
+      return '<li class="donador"><span class="donador-foto">' + esc(iniciales(c)) + '</span>' +
+        '<span class="donador-arboles">' + arboles(c).toLocaleString('es-MX') + ' <small>árboles</small></span></li>';
+    }).concat(EJEMPLOS.map(function (d) {
+      return '<li class="donador"><img class="donador-foto" src="' + d.foto + '" alt="" style="object-position:' + d.pos + '" loading="lazy">' +
+        '<span class="donador-arboles">' + d.arboles.toLocaleString('es-MX') + ' <small>árboles</small></span></li>';
+    }));
+    // Se repite la lista para que el loop no tenga hueco (la animación mueve -50%)
+    while (items.length < 8) items = items.concat(items);
+    var pista = $('donadores-pista');
+    pista.innerHTML = items.concat(items.map(function (h) { return h.replace('<li ', '<li aria-hidden="true" '); })).join('');
+    pista.style.setProperty('--dur', (items.length * 4) + 's');
+  }
+
   function pintar(lista) {
+    pintarDonadores(lista);
     pintarRanking(lista);
     if (!api) { pintarContador(lista); return; }
     fetch(api + '/api/resumen').then(function (r) { if (!r.ok) throw 0; return r.json(); })

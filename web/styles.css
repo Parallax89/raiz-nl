@@ -357,3 +357,32 @@ section[id], main[id] { scroll-margin-top: 16px; }
 .leaflet-control-layers { font-size: 13px; }
 .texto-x { margin: 6px 0 0; padding: 10px 12px; border: 1px solid var(--gray-2); border-radius: 6px;
   font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.45; background: var(--gray-1); white-space: pre-wrap; }
+
+/* Tira deslizante "La gente que ha donado" (hero) */
+.donadores { margin: 36px auto 0; max-width: 1100px; }
+.donadores-titulo { margin: 0 0 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+.chip-ejemplo { display: inline-block; margin-left: 6px; background: rgba(255, 255, 255, 0.18); color: var(--sky); font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 999px; vertical-align: middle; }
+.donadores-ventana {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.donadores-pista { list-style: none; margin: 0; padding: 4px 0; display: flex; gap: 14px; width: max-content; animation: deslizar var(--dur, 30s) linear infinite; }
+.donadores-ventana:hover .donadores-pista { animation-play-state: paused; }
+@keyframes deslizar { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .donadores-pista { animation: none; }
+  .donadores-ventana { overflow-x: auto; }
+}
+.donador {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px; padding: 6px 16px 6px 6px; backdrop-filter: blur(4px);
+}
+.donador-foto {
+  width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--white);
+  object-fit: cover; background: var(--sunset); color: var(--white);
+  display: grid; place-items: center; font-weight: 900; font-size: 16px;
+}
+.donador-arboles { font-weight: 900; font-size: 18px; white-space: nowrap; }
+.donador-arboles small { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--sky); letter-spacing: 0.5px; }

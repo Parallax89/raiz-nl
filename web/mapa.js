@@ -71,10 +71,14 @@
 
   function popupZona(p) {
     const razones = (p.razones || []).map((r) => `<li>${esc(r)}</li>`).join('');
+    const cuads = ((state.datos.cuadrantes || {}).features || []).filter((c) => c.properties.zona_id === p.id)
+      .map((c) => `<li>${esc(c.properties.nombre.replace(/^Cuadrante \d+ · /, ''))}
+        <span class="meta">(${c.properties.centro[0].toFixed(4)}, ${c.properties.centro[1].toFixed(4)})</span></li>`).join('');
     const prioridad = p.score != null ? `Prioridad ${fmt(p.score)}/100 · ` : '';
     return `<h3>${esc(p.nombre)}</h3>
       <div class="meta">${prioridad}${p.objetivo === 'agua' ? 'Agua' : 'Aire'} · ${esc(p.id)}</div>
-      <ul>${razones}</ul><button type="button" class="btn-donar-zona" data-zona="${esc(p.id)}">🌳 Donar un árbol aquí</button>`;
+      <ul>${razones}</ul>${cuads ? `<b>Cuadrantes de plantación</b><ol>${cuads}</ol>` : ''}
+      <button type="button" class="btn-donar-zona" data-zona="${esc(p.id)}">🌳 Donar un árbol aquí</button>`;
   }
 
   function capaZonas(objetivo) {
@@ -93,6 +97,22 @@
         .bindTooltip(`${esc(p.id)} · ${esc(p.nombre)}`).bindPopup(popupZona(p), { maxWidth: 320 }).addTo(g);
     });
     return g;
+  }
+
+  function capaCuadrantes() {
+    return L.geoJSON(state.datos.cuadrantes, {
+      style: (f) => ({ color: COLOR[f.properties.objetivo], weight: 2.5, fillColor: COLOR[f.properties.objetivo], fillOpacity: 0.55 }),
+      onEachFeature: (f, l) => {
+        const p = f.properties;
+        const razones = (p.razones || []).map((r) => `<li>${esc(r)}</li>`).join('');
+        l.bindPopup(`<h3>${esc(p.nombre)}</h3>
+          <div class="meta">${esc(p.id)} · ${esc(p.municipio)} · ${fmt(p.area_ha, p.area_ha < 10 ? 2 : 0)} ha · prioridad ${fmt(p.score)}/100</div>
+          <ul>${razones}</ul><div class="meta">Centro: ${p.centro[0].toFixed(5)}, ${p.centro[1].toFixed(5)}</div>
+          <button type="button" class="btn-donar-zona" data-zona="${esc(p.zona_id)}">🌳 Donar un árbol para esta zona</button>`,
+          { maxWidth: 320 });
+        l.bindTooltip(`${esc(p.id)} · ${esc(p.nombre)}`, { sticky: true });
+      }
+    });
   }
 
   function incendiosFiltrados() {
@@ -198,6 +218,7 @@
   const CAPAS = [
     { id: 'zonasAgua', nombre: 'Zonas priorizadas: agua', sw: `background:${COLOR.agua}33;border-color:${COLOR.agua}`, on: true },
     { id: 'zonasAire', nombre: 'Zonas priorizadas: aire', sw: `background:${COLOR.aire}33;border-color:${COLOR.aire}`, on: true },
+    { id: 'cuadrantes', nombre: 'Cuadrantes de plantación (sierra 250 m, ciudad 500 m)', sw: `background:${COLOR.agua}8c;border-color:${COLOR.agua}`, on: true },
     { id: 'incendios', nombre: 'Incendios CONAGUA (tamaño = hectáreas)', sw: `background:${COLOR.fuego}`, punto: true, on: true },
     { id: 'satelite', nombre: 'Fuego por satélite 2024-2025', sw: `border-color:${COLOR.fuego}`, punto: true, on: true },
     { id: 'cuencas', nombre: 'Cuencas que escurren a las presas', sw: `border:2px dashed ${COLOR.spruce}`, on: true },
@@ -385,7 +406,9 @@
   }
 
   async function pintaKpisRaiz() {
-    let html = kpi(fmt(state.datos.indicadores.zonas.agua + state.datos.indicadores.zonas.aire), 'zonas donde se puede donar');
+    const cq = state.datos.cuadrantes.features;
+    const kpiCuadrantes = kpi(fmt(cq.length), `cuadrantes de plantación: ${cq.filter((c) => c.properties.objetivo === 'agua').length} en la sierra (250 m) y ${cq.filter((c) => c.properties.objetivo === 'aire').length} en la ciudad (500 m)`);
+    let html = kpi(fmt(state.datos.indicadores.zonas.agua + state.datos.indicadores.zonas.aire), 'zonas donde se puede donar') + kpiCuadrantes;
     if (API_BASE) {
       try {
         const r = await fetch(API_BASE + '/api/resumen');
@@ -397,7 +420,7 @@
             kpi(fmt(res.plantados), 'árboles plantados (verificados por quien planta)'),
             kpi(fmt((po.agua || {}).donados || 0), 'donados para agua'),
             kpi(fmt((po.aire || {}).donados || 0), 'donados para aire')
-          ].join('');
+          ].join('') + kpiCuadrantes;
         }
       } catch (e) { /* sin API: se queda el conteo de zonas */ }
     }
@@ -461,9 +484,10 @@
   });
 
   Promise.all(['zonas.geojson', 'incendios.geojson', 'cuencas.geojson', 'presas.geojson', 'estaciones.geojson',
-    'acuiferos.geojson', 'indicadores.json', 'resumen.json'].map(traer)).then((v) => {
-    const [zonas, incendios, cuencas, presas, estaciones, acuiferos, indicadores, resumen] = v;
-    Object.assign(state.datos, { zonas, incendios, cuencas, presas, estaciones, acuiferos, indicadores, resumen });
+    'acuiferos.geojson', 'indicadores.json', 'resumen.json', 'cuadrantes.geojson'].map(traer)).then((v) => {
+    const [zonas, incendios, cuencas, presas, estaciones, acuiferos, indicadores, resumen, cuadrantes] = v;
+    Object.assign(state.datos, { zonas, incendios, cuencas, presas, estaciones, acuiferos, indicadores, resumen,
+      cuadrantes: cuadrantes || { type: 'FeatureCollection', features: [] } });
     state.capas.zonasAgua = capaZonas('agua');
     state.capas.zonasAire = capaZonas('aire');
     state.capas.incendios = L.layerGroup();
@@ -472,7 +496,8 @@
     state.capas.presas = capaPresas();
     state.capas.estaciones = capaEstaciones();
     state.capas.acuiferos = capaAcuiferos();
-    ['cuencas', 'incendios', 'satelite', 'zonasAgua', 'zonasAire', 'presas', 'estaciones'].forEach((id) => state.capas[id].addTo(map));
+    state.capas.cuadrantes = capaCuadrantes();
+    ['cuencas', 'incendios', 'satelite', 'zonasAgua', 'zonasAire', 'cuadrantes', 'presas', 'estaciones'].forEach((id) => state.capas[id].addTo(map));
     pintaControlCapas();
     preparaFiltros();
     actualiza();

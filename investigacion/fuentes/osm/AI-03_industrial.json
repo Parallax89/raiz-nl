@@ -1,0 +1,68 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-15T02:54:31Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "way",
+  "id": 1364421197,
+  "bounds": {
+    "minlat": 25.6067356,
+    "minlon": -99.9942251,
+    "maxlat": 25.6096634,
+    "maxlon": -99.9929004
+  },
+  "nodes": [
+    12634942640,
+    12634942641,
+    12634942639,
+    12634942638,
+    12634942637,
+    12634942640
+  ],
+  "geometry": [
+    { "lat": 25.6096634, "lon": -99.9936683 },
+    { "lat": 25.6072337, "lon": -99.9941572 },
+    { "lat": 25.6068967, "lon": -99.9942251 },
+    { "lat": 25.6067356, "lon": -99.9933043 },
+    { "lat": 25.6091973, "lon": -99.9929004 },
+    { "lat": 25.6096634, "lon": -99.9936683 }
+  ],
+  "tags": {
+    "landuse": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 1364421198,
+  "bounds": {
+    "minlat": 25.6072337,
+    "minlon": -99.9957607,
+    "maxlat": 25.6105836,
+    "maxlon": -99.9936683
+  },
+  "nodes": [
+    12634942643,
+    12634942642,
+    12634942641,
+    12634942640,
+    12634942643
+  ],
+  "geometry": [
+    { "lat": 25.6105836, "lon": -99.9952422 },
+    { "lat": 25.6075067, "lon": -99.9957607 },
+    { "lat": 25.6072337, "lon": -99.9941572 },
+    { "lat": 25.6096634, "lon": -99.9936683 },
+    { "lat": 25.6105836, "lon": -99.9952422 }
+  ],
+  "tags": {
+    "landuse": "industrial"
+  }
+}
+
+  ]
+}

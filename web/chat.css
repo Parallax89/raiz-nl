@@ -2,6 +2,9 @@
 .rchat-fab { position: fixed; right: 20px; bottom: 20px; z-index: 1200; background: var(--sunset); color: var(--white);
   border: 0; border-radius: 999px; padding: 14px 22px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; box-shadow: var(--shadow); }
 .rchat-fab:hover { background: var(--sunset-2); }
+/* Netlify inyecta su badge (iframe #nl-badge-frame, ~92px de alto) abajo a la derecha: el chat se sube encima */
+:root:has(#nl-badge-frame) .rchat-fab { bottom: 104px; }
+:root:has(#nl-badge-frame) .rchat-panel { bottom: 168px; height: min(560px, calc(100vh - 194px)); }
 .rchat-panel { position: fixed; right: 20px; bottom: 84px; z-index: 1200; width: min(380px, calc(100vw - 24px)); height: min(560px, calc(100vh - 110px));
   display: flex; flex-direction: column; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
 .rchat-head { display: flex; gap: 8px; align-items: center; background: var(--spruce); color: var(--white); padding: 12px 14px; }

@@ -82,6 +82,7 @@
         <button type="button" class="monto" data-arboles="50" aria-pressed="false">50 árboles</button>
         <button type="button" class="monto" data-arboles="100" aria-pressed="false">100 árboles</button>
       </div>
+      <p class="monto-impacto" id="monto-impacto" aria-live="polite"></p>
       <label class="monto-otro">Otra cantidad
         <input type="number" id="monto-otro" min="1" max="10000" step="1" inputmode="numeric" placeholder="1">
       </label>
@@ -95,9 +96,23 @@
     <div class="rank-tabs" role="tablist" aria-label="Orden del ranking">
       <button class="rank-tab" role="tab" aria-selected="true" data-orden="recientes">Más recientes</button>
       <button class="rank-tab" role="tab" aria-selected="false" data-orden="arboles">Más árboles</button>
+      <button class="rank-tab" role="tab" aria-selected="false" data-orden="municipios">Por municipio</button>
+      <button class="rank-tab" role="tab" aria-selected="false" data-orden="equipos">Equipos</button>
     </div>
     <ol class="rank-lista" id="rank-lista"></ol>
     <p class="rank-nota">Prototipo: el ranking muestra los compromisos hechos en este navegador.</p>
+    <div class="equipos-cta" id="equipos">
+      <h3>Únete a un equipo</h3>
+      <p>Dona con tu escuela, tu empresa o tu colonia y suban juntos en el ranking.</p>
+      <form class="equipo-form" id="form-equipo">
+        <label class="sr" for="equipo-nombre">Nombre del equipo</label>
+        <input id="equipo-nombre" list="equipos-lista" maxlength="40" autocomplete="off" placeholder="Ej. Tec, UANL, Colonia Mitras">
+        <button class="pill" type="submit">Unirme</button>
+      </form>
+      <div class="equipos-sugeridos" id="equipos-sugeridos"></div>
+      <p class="equipo-actual" id="equipo-actual" aria-live="polite"></p>
+    </div>
+    <datalist id="equipos-lista"></datalist>
   </section>
 
   <section class="impacto" id="impacto" aria-labelledby="impacto-titulo">
@@ -245,6 +260,19 @@
       <label class="campo">Mensaje (opcional)
         <input type="text" name="mensaje" maxlength="80" autocomplete="off">
       </label>
+      <label class="campo">Equipo (opcional)
+        <input type="text" name="equipo" maxlength="40" list="equipos-lista" autocomplete="off" placeholder="Tec, UANL, tu empresa…">
+      </label>
+      <label class="campo">¿De qué municipio eres? (opcional)
+        <select name="municipio_donador">
+          <option value="">Prefiero no decir</option>
+          <option>Apodaca</option><option>Cadereyta Jiménez</option><option>El Carmen</option><option>García</option>
+          <option>General Escobedo</option><option>General Zuazua</option><option>Guadalupe</option><option>Juárez</option>
+          <option>Monterrey</option><option>Pesquería</option><option>Salinas Victoria</option>
+          <option>San Nicolás de los Garza</option><option>San Pedro Garza García</option><option>Santa Catarina</option>
+          <option>Santiago</option><option>Otro municipio de NL</option><option>Fuera de Nuevo León</option>
+        </select>
+      </label>
       <label class="campo">Usuario de X (opcional)
         <span class="input-prefijo"><span aria-hidden="true">@</span><input type="text" name="usuario" maxlength="16" autocomplete="off" pattern="@?[A-Za-z0-9_]{1,15}" inputmode="text"></span>
       </label>
@@ -295,6 +323,15 @@
         <p class="nota" id="diploma-zona"></p>
       </div>
       <button type="button" class="btn-pri btn-ancho" id="btn-pdf">⬇️ Descargar diploma (PDF)</button>
+      <div class="share" id="share">
+        <p class="share-titulo">Tu imagen para redes</p>
+        <canvas id="share-card" width="1200" height="675" aria-label="Imagen para compartir tu donación"></canvas>
+        <div class="share-acciones">
+          <button type="button" class="btn-sec" id="btn-share-dl">⬇️ Descargar imagen</button>
+          <button type="button" class="btn-sec" id="btn-share" hidden>📤 Compartir</button>
+        </div>
+        <p class="nota">Adjúntala a tu publicación en X para que se vea dónde plantaste.</p>
+      </div>
       <p class="nota">Ya eres parte de #RaízNL. Demo: el pago es simulado y no hubo cobro. «Publicar en X» abre tu cuenta con el mismo texto; tú decides si lo publicas.</p>
       <div class="dlg-acciones">
         <button type="button" class="btn-sec" id="btn-cerrar">Cerrar</button>
@@ -310,5 +347,6 @@
   <script src="chat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="checkout.js"></script>
+  <script src="impulso.js"></script>
 </body>
 </html>

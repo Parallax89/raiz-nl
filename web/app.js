@@ -384,6 +384,7 @@
     const ficha = state.apiOk ? state.fichas.get(f.properties.id) : null;
     form.arboles.value = ficha && ficha.arboles_disponibles > 0 ? Math.min(state.arboles, ficha.arboles_disponibles) : state.arboles;
     form.etiquetar.disabled = true;
+    try { form.equipo.value = window.localStorage.getItem('raiznl.equipo.v1') || ''; } catch (e) { /* sin storage */ }
     form.hidden = false;
     $('#dlg-gracias').hidden = true;
     $('#dlg-zona').textContent = `${f.properties.nombre} (${f.properties.objetivo === 'agua' ? '💧 Agua' : '🌬️ Aire'})`;
@@ -455,7 +456,9 @@
       nombre: form.nombre.value.trim() || null,
       mensaje: form.mensaje.value.trim() || null,
       arboles, zona_nombre: p.nombre,
-      usuario: usuario || null, etiquetar
+      usuario: usuario || null, etiquetar,
+      equipo: form.equipo.value.trim() || null,
+      municipio_donador: form.municipio_donador.value || null
     });
     $('#btn-x').href = 'https://x.com/intent/post?text=' + encodeURIComponent(texto);
     const quien = form.nombre.value.trim();
@@ -469,7 +472,7 @@
     form.hidden = true;
     $('#dlg-pagando').hidden = true;
     $('#dlg-gracias').hidden = false;
-    if (window.RaizCheckout) window.RaizCheckout.diploma(zonaDonacion, { id: idCompromiso, nombre: quien, arboles });
+    if (window.RaizCheckout) window.RaizCheckout.diploma(zonaDonacion, { id: idCompromiso, nombre: quien, arboles, equipo: form.equipo.value.trim() || null });
     if (state.zonaSel === p.id) pintarTarjeta(zonaDonacion);
     pintarTablero();
   });

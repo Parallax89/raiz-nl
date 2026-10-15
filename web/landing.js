@@ -35,7 +35,43 @@
   }
 
   /* Ranking */
+  /* Ranking por grupo: municipio de quien dona o equipo */
+  function agrupar(lista, clave) {
+    var m = {};
+    lista.forEach(function (c) {
+      var t = String(c[clave] || '').trim();
+      if (!t) return;
+      var k = t.toLowerCase();
+      if (!m[k]) m[k] = { nombre: t, arboles: 0, personas: 0 };
+      m[k].arboles += arboles(c);
+      m[k].personas += 1;
+    });
+    return Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return b.arboles - a.arboles; });
+  }
+  function pintarGrupos(lista, clave) {
+    var grupos = agrupar(lista, clave).slice(0, 10);
+    var ol = $('rank-lista');
+    if (!grupos.length) {
+      ol.innerHTML = '<li class="rank-vacio">' + (clave === 'equipo'
+        ? 'Todavía no hay equipos. <a href="#equipos">Arma el primero</a> con tu escuela, empresa o colonia.'
+        : 'Todavía nadie dice de qué municipio es. Al donar, elige el tuyo y pon a tu municipio en el mapa.') + '</li>';
+      return;
+    }
+    var max = grupos[0].arboles;
+    ol.innerHTML = grupos.map(function (g, i) {
+      var medalla = ['🥇', '🥈', '🥉'][i] || String(i + 1);
+      return '<li class="rank-item rank-grupo">' +
+        '<span class="rank-icono" aria-hidden="true">' + medalla + '</span>' +
+        '<div class="rank-texto"><div class="rank-nombre">' + esc(g.nombre) + '</div>' +
+        '<span class="rank-barra"><span style="width:' + Math.max(4, Math.round(100 * g.arboles / max)) + '%"></span></span>' +
+        '<p class="rank-fecha">' + g.personas + (g.personas === 1 ? ' persona' : ' personas') + '</p></div>' +
+        '<span class="rank-arboles">' + g.arboles.toLocaleString('es-MX') + (g.arboles === 1 ? ' árbol' : ' árboles') + '</span></li>';
+    }).join('');
+  }
+
   function pintarRanking(lista) {
+    if (orden === 'municipios') return pintarGrupos(lista, 'municipio_donador');
+    if (orden === 'equipos') return pintarGrupos(lista, 'equipo');
     var items = lista.slice();
     if (orden === 'arboles') items.sort(function (a, b) { return arboles(b) - arboles(a); });
     else items.sort(function (a, b) { return String(b.fecha).localeCompare(String(a.fecha)); });
@@ -49,7 +85,7 @@
       var n = arboles(c);
       var nombre = c.nombre || (c.usuario ? '@' + c.usuario : 'Anónimo');
       var fecha = c.fecha ? new Date(c.fecha).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' }) : '';
-      var donde = c.zona_nombre || c.municipio || '';
+      var donde = [c.equipo ? 'Equipo ' + c.equipo : '', c.zona_nombre || c.municipio || ''].filter(Boolean).join(' · ');
       return '<li class="rank-item">' +
         '<span class="rank-icono" aria-hidden="true">' + (c.objetivo === 'aire' ? '🌬️' : '💧') + '</span>' +
         '<div class="rank-texto"><div class="rank-nombre">' + esc(nombre) + '</div>' +

@@ -437,5 +437,34 @@ section[id], main[id] { scroll-margin-top: 16px; }
   #form-donar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; align-items: start; }
   #form-donar > * { grid-column: 1; }
   #form-donar > h2, #form-donar > #dlg-zona, #form-donar > #dlg-error, #form-donar > .dlg-acciones { grid-column: 1 / -1; }
-  #form-donar > .pago-demo { grid-column: 2; grid-row: 3 / span 7; margin-top: 12px; }
+  #form-donar > .pago-demo { grid-column: 2; grid-row: 3 / span 10; margin-top: 12px; }
 }
+
+/* Montos con impacto (#4) */
+.monto { height: auto; min-height: 56px; padding: 8px 6px; display: grid; gap: 2px; place-content: center; }
+.monto-sub { font-size: 11px; font-weight: 500; opacity: 0.8; }
+.monto-impacto { margin: 12px 0 0; padding: 10px 12px; border-radius: 6px; background: var(--gray-1); font-size: 13.5px; line-height: 1.45; color: var(--text); }
+.monto-impacto b { color: var(--spruce); }
+.monto-fuente { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.campo select { width: 100%; min-width: 0; border: 1px solid var(--gray-4); border-radius: 6px; padding: 10px; background: var(--white); color: var(--text); font: inherit; font-weight: 500; }
+
+/* Ranking por grupo y equipos */
+.rank-tabs { flex-wrap: wrap; }
+.rank-barra { display: block; height: 6px; border-radius: 999px; background: var(--gray-2); margin: 6px 0 2px; overflow: hidden; }
+.rank-barra > span { display: block; height: 100%; background: var(--fern); border-radius: inherit; }
+.equipos-cta { max-width: 720px; margin: 28px auto 0; background: var(--white); border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: 0 2px 6px rgba(8, 24, 44, 0.08); }
+.equipos-cta h3 { margin: 0 0 4px; color: var(--spruce); font-weight: 900; text-transform: uppercase; }
+.equipos-cta p { margin: 0 0 12px; color: var(--muted); }
+.equipo-form { display: flex; gap: 8px; max-width: 480px; margin: 0 auto; }
+.equipo-form input { flex: 1; min-width: 0; height: 44px; border: 1px solid var(--gray-4); border-radius: 999px; padding: 0 16px; font: inherit; }
+.equipos-sugeridos { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.chip-equipo { border: 1px solid var(--gray-4); background: var(--gray-1); color: var(--spruce); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.chip-equipo[aria-pressed="true"] { background: var(--spruce); border-color: var(--spruce); color: var(--white); }
+.equipo-actual { margin: 12px 0 0 !important; color: var(--spruce) !important; font-size: 14px; }
+
+/* Tarjeta para redes (#5) */
+.share { margin: 16px 0 0; }
+.share-titulo { margin: 0 0 8px; font-weight: 900; color: var(--spruce); text-transform: uppercase; font-size: 13px; }
+#share-card { width: 100%; height: auto; border-radius: 8px; display: block; box-shadow: 0 2px 8px rgba(8, 24, 44, 0.15); }
+.share-acciones { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.share-acciones .btn-sec { flex: 1; }

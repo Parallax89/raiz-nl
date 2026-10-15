@@ -193,23 +193,59 @@
     try { await document.fonts.ready; } catch (e) { /* sin Font Loading API */ }
     const ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
     const agua = d.objetivo !== 'aire';
+    const F = 'Montserrat, Arial, sans-serif';
+    const X = 64, COL = 520;           // columna de texto: 64 → 584; el mapa empieza en 640
+    const PIE = H - 110;               // nada de texto de la columna baja de aquí
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+
+    // fondo y cerros
     ctx.fillStyle = '#113259'; ctx.fillRect(0, 0, W, H);
-    // cerros
     ctx.fillStyle = '#196d4a';
     ctx.beginPath(); ctx.moveTo(0, H - 70);
     ctx.bezierCurveTo(260, H - 120, 520, H - 40, 760, H - 90); ctx.bezierCurveTo(960, H - 130, 1100, H - 60, W, H - 95);
     ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
-    const F = 'Montserrat, Arial, sans-serif';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = '#dc582a'; ctx.font = `900 30px ${F}`; ctx.fillText('#RAÍZNL', 64, 90);
-    ctx.fillStyle = '#ffffff'; ctx.font = `900 150px ${F}`; ctx.fillText(d.arboles.toLocaleString('es-MX'), 58, 250);
-    ctx.font = `900 44px ${F}`; ctx.fillText(d.arboles === 1 ? 'ÁRBOL' : 'ÁRBOLES', 64, 305);
-    ctx.fillStyle = agua ? '#b4dbe1' : '#ffd08a'; ctx.font = `700 30px ${F}`;
-    ctx.fillText(agua ? '💧 para el agua de Monterrey' : '🌬️ para el aire de Monterrey', 64, 355);
-    ctx.fillStyle = '#ffffff'; ctx.font = `500 24px ${F}`;
-    envolver(ctx, `${d.zona} · ${d.municipio}`, 500).slice(0, 2).forEach((l, i) => ctx.fillText(l, 64, 405 + i * 32));
-    ctx.fillStyle = '#b4dbe1'; ctx.font = `700 22px ${F}`;
-    ctx.fillText(IMPACTO(d.objetivo, d.arboles) + (d.equipo ? ` · Equipo ${d.equipo}` : ''), 64, 485);
+
+    // tamaño de letra que cabe en un ancho
+    const cabe = (txt, peso, max, min, ancho) => {
+      let s = max;
+      for (; s > min; s -= 2) { ctx.font = `${peso} ${s}px ${F}`; if (ctx.measureText(txt).width <= ancho) break; }
+      ctx.font = `${peso} ${s}px ${F}`;
+      return s;
+    };
+
+    let y = 96;
+    ctx.fillStyle = '#dc582a'; ctx.font = `900 30px ${F}`; ctx.fillText('#RAÍZNL', X, y);
+    // número grande
+    const numero = d.arboles.toLocaleString('es-MX');
+    const sn = cabe(numero, 900, 150, 70, COL);
+    ctx.fillStyle = '#ffffff'; y += sn * 0.95; ctx.fillText(numero, X - 4, y);
+    ctx.font = `900 42px ${F}`; y += 52; ctx.fillText(d.arboles === 1 ? 'ÁRBOL' : 'ÁRBOLES', X, y);
+    // etiqueta de objetivo (píldora dibujada, sin emoji)
+    y += 22;
+    const etiqueta = agua ? 'PARA EL AGUA DE MONTERREY' : 'PARA EL AIRE DE MONTERREY';
+    ctx.font = `900 20px ${F}`;
+    const pw = ctx.measureText(etiqueta).width + 40;
+    ctx.fillStyle = agua ? '#1d5fa8' : '#b4580f'; rect(ctx, X, y, pw, 40, 20); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(X + 20, y + 20, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillText(etiqueta, X + 32, y + 27);
+    y += 40;
+    // zona, impacto y equipo: cada uno envuelto en la columna, sin pasarse del pie
+    const bloque = (txt, peso, size, color, maxLineas, antes) => {
+      ctx.font = `${peso} ${size}px ${F}`; ctx.fillStyle = color;
+      let lineas = envolver(ctx, txt, COL);
+      if (lineas.length > maxLineas) {
+        lineas = lineas.slice(0, maxLineas);
+        let u = lineas[maxLineas - 1];
+        while (ctx.measureText(u + '…').width > COL && u.length) u = u.slice(0, -1);
+        lineas[maxLineas - 1] = u + '…';
+      }
+      y += antes;
+      lineas.forEach((l) => { if (y + size <= PIE) { y += size * 1.3; ctx.fillText(l, X, y); } });
+    };
+    bloque(`${d.zona} · ${d.municipio}`, 500, 24, '#ffffff', 2, 14);
+    bloque(IMPACTO(d.objetivo, d.arboles).replace('≈', 'aprox.'), 700, 22, '#b4dbe1', 1, 8);
+    if (d.equipo) bloque('Equipo ' + d.equipo, 700, 22, '#b4dbe1', 1, 0);
+
     // mapa del punto
     const mx = 640, my = 64, mw = 496, mh = 400;
     ctx.save(); rect(ctx, mx, my, mw, mh, 18); ctx.clip();
@@ -225,8 +261,18 @@
       ctx.fillStyle = '#ffffff'; ctx.font = `700 20px ${F}`;
       ctx.fillText(textoCoords(d.punto), mx, my + mh + 34);
     }
-    ctx.fillStyle = '#ffffff'; ctx.font = `900 30px ${F}`; ctx.fillText('¿Quién me sigue? 🌳', 64, H - 40);
-    ctx.font = `700 22px ${F}`; ctx.textAlign = 'right'; ctx.fillText(location.host || 'raiz-nl.netlify.app', W - 64, H - 40);
+
+    // pie: frase a la izquierda, sitio a la derecha, sin emojis
+    ctx.fillStyle = '#ffffff'; ctx.font = `900 30px ${F}`; ctx.fillText('¿Quién me sigue?', X, H - 40);
+    const anchoFrase = ctx.measureText('¿Quién me sigue?').width;
+    // arbolito dibujado
+    const tx = X + anchoFrase + 26, ty = H - 40;
+    ctx.fillStyle = '#6fba0d';
+    ctx.beginPath(); ctx.moveTo(tx, ty - 34); ctx.lineTo(tx + 14, ty - 10); ctx.lineTo(tx - 14, ty - 10); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(tx, ty - 24); ctx.lineTo(tx + 17, ty + 2); ctx.lineTo(tx - 17, ty + 2); ctx.fill();
+    ctx.fillStyle = '#7a4a24'; ctx.fillRect(tx - 3, ty + 2, 6, 7);
+    const sitio = /^(localhost|127\.|100\.)/.test(location.host) || !location.host ? 'raiz-nl.netlify.app' : location.host;
+    ctx.font = `700 22px ${F}`; ctx.textAlign = 'right'; ctx.fillText(sitio, W - 64, H - 40);
     ctx.textAlign = 'left';
   }
   function blobTarjeta() {

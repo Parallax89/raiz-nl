@@ -11,6 +11,14 @@
     resumen: 'resumen.json'
   };
   const STORAGE_KEY = 'raiznl.compromisos.v1';
+  // API de donaciones (backend/). ?api=URL la fuerza; en localhost se busca en el puerto 8001.
+  // Sin API, el portal sigue funcionando con compromisos guardados en el navegador.
+  const API_BASE = (() => {
+    const q = new URLSearchParams(location.search).get('api');
+    if (q) return q.replace(/\/$/, '');
+    if (window.RAIZ_API) return window.RAIZ_API;
+    return ['localhost', '127.0.0.1'].includes(location.hostname) ? 'http://127.0.0.1:8001' : null;
+  })();
   const PALETAS = {
     agua: ['#dbe9f8', '#a9cbef', '#6fa5de', '#3779c2', '#164f94'],
     aire: ['#fdecc8', '#f9cd86', '#f2a24b', '#d9731f', '#a24a0c']
@@ -39,7 +47,9 @@
     capaZonas: null,
     capasPorId: new Map(),
     contexto: {},
-    memoria: []
+    memoria: [],
+    apiOk: false,
+    fichas: new Map()
   };
 
   const $ = (sel) => document.querySelector(sel);
@@ -85,9 +95,33 @@
     if (zonasReales) state.datos.zonas = zonasReales;
     $('#mock-badge').hidden = !state.usoMock;
   }
+  async function api(ruta, opciones) {
+    const r = await fetch(API_BASE + '/api' + ruta,
+      Object.assign({ headers: { 'Content-Type': 'application/json' } }, opciones || {}));
+    const cuerpo = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const d = cuerpo.detail;
+      const err = new Error(typeof d === 'string' ? d : (d && d.error) || r.statusText);
+      err.status = r.status;
+      throw err;
+    }
+    return cuerpo;
+  }
+  async function cargarFichas() {
+    if (!API_BASE) return;
+    try {
+      const fichas = await api('/zonas');
+      state.fichas = new Map(fichas.map((z) => [z.id, z]));
+      state.apiOk = true;
+    } catch (e) {
+      state.apiOk = false;
+    }
+  }
   function zonasDe(objetivo) {
     const fs = (state.datos.zonas && state.datos.zonas.features) || [];
-    return fs.filter((f) => f.properties && f.properties.objetivo === objetivo)
+    // Con API, sólo se listan las zonas que la API acepta (las descartadas por cuenca no salen)
+    return fs.filter((f) => f.properties && f.properties.objetivo === objetivo &&
+      (!state.apiOk || state.fichas.has(f.properties.id)))
       .sort((a, b) => (a.properties.rank || 999) - (b.properties.rank || 999));
   }
 
@@ -276,13 +310,33 @@
       <h2>#${esc(p.rank)} · ${esc(p.nombre)}</h2>
       <div class="meta">${esc(p.municipio)} · ${p.objetivo === 'agua' ? '💧 Agua' : '🌬️ Aire'} · ${esc(p.id)}</div>
       ${metricas ? `<div class="metricas">${metricas}</div>` : ''}
+      ${bloqueFicha(p.id)}
       <h3>¿Por qué aquí?</h3>
       <ul>${razones}</ul>
       <p class="aviso">${esc(NOTAS[p.objetivo])}</p>
       <button class="btn-pri btn-ancho" id="btn-donar">🌳 Donar un árbol aquí</button>`;
+    const z = state.apiOk ? state.fichas.get(p.id) : null;
+    if (z && z.arboles_disponibles <= 0) {
+      $('#btn-donar').disabled = true;
+      $('#btn-donar').textContent = 'Esta zona ya completó su cupo';
+    }
     $('#btn-donar').addEventListener('click', () => abrirDonacion(f));
     $('#vista-lista').hidden = true;
     $('#vista-zona').hidden = false;
+  }
+
+  function bloqueFicha(id) {
+    const z = state.apiOk ? state.fichas.get(id) : null;
+    if (!z) return '';
+    const destino = z.presa_destino ? `Aporta a la presa ${esc(z.presa_destino)}`
+      : z.acuifero_destino ? `Recarga del acuífero ${esc(z.acuifero_destino)}`
+      : z.estacion_sima ? `Estación del SIMA más cercana: ${esc(z.estacion_sima)}` : '';
+    return `<div class="metricas">
+        <div class="metrica"><b>${fmt(z.arboles_disponibles)}</b><span>lugares disponibles de ${fmt(z.arboles_caben)}</span></div>
+        <div class="metrica"><b>${fmt(z.arboles_donados)}</b><span>árboles donados</span></div>
+        ${z.arboles_plantados ? `<div class="metrica"><b>${fmt(z.arboles_plantados)}</b><span>plantados</span></div>` : ''}
+      </div>
+      <p class="meta">${destino}${destino ? ' · ' : ''}Planta: ${esc(z.operador)}</p>`;
   }
 
   /* ---------- Donación + publicación en X ---------- */
@@ -291,18 +345,27 @@
     return /^[A-Za-z0-9_]{1,15}$/.test(u) ? u : '';
   }
 
-  function textoX(f, usuario, etiquetar) {
-    const p = f.properties;
-    const cola = ' #RaízNL' + (etiquetar && usuario ? ' vía @' + usuario : '');
-    const armar = (nombre) => p.objetivo === 'agua'
-      ? `Acaban de donar un árbol para mejorar el suministro de agua del área metropolitana de Monterrey 🌳💧 Zona: ${nombre}${cola}`
-      : `Acaban de donar un árbol para mejorar la calidad del aire en ${p.municipio} 🌳🌬️ Zona: ${nombre}${cola}`;
-    let texto = armar(p.nombre);
-    if (texto.length > 280) {
-      const exceso = texto.length - 280 + 1;
-      texto = armar(p.nombre.slice(0, Math.max(8, p.nombre.length - exceso)).trimEnd() + '…');
+  // Plantillas de Contexto_Arbol.md. Con API, el texto lo arma el backend (backend/app/textos.py).
+  function textoLocal(p) {
+    const corto = String(p.nombre).split('·').pop().split('→')[0].trim();
+    const todo = [p.nombre].concat(p.razones || []).join(' ; ');
+    if (p.objetivo === 'agua') {
+      const presa = (todo.match(/presa\s+(El Cuchillo|La Boca|Cerro Prieto)/i) || [])[1];
+      const acuifero = (todo.match(/acuífero en déficit:\s*([^;.,]+)/i) || [])[1];
+      if (presa) return `Donaron un árbol para restaurar ${corto}, cuenca que aporta a ${presa}.`;
+      if (acuifero) return `Donaron un árbol para restaurar ${corto}, zona de recarga del acuífero ${acuifero.trim()}.`;
+      return `Donaron un árbol para restaurar ${corto}.`;
     }
-    return texto;
+    const est = (todo.match(/estación\s+([A-ZÁÉÍÓÚÑ0-9 ]+?)(?:\)|$|\s*·|,)/) || [])[1];
+    const lugar = est
+      ? `los alrededores de la estación ${est.trim().toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase())} del SIMA`
+      : corto;
+    return `Donaron un árbol para arbolado en ${lugar}, una zona de ${p.municipio} con poca sombra y mala calidad del aire.`;
+  }
+  function textoX(f, usuario, etiquetar) {
+    const z = state.apiOk ? state.fichas.get(f.properties.id) : null;
+    const base = (z && z.texto_ejemplo) || textoLocal(f.properties);
+    return base + (etiquetar && usuario ? ' @' + usuario : '');
   }
 
   const dlg = $('#dlg-donar');
@@ -316,6 +379,10 @@
     form.hidden = false;
     $('#dlg-gracias').hidden = true;
     $('#dlg-zona').textContent = `${f.properties.nombre} (${f.properties.objetivo === 'agua' ? '💧 Agua' : '🌬️ Aire'})`;
+    $('#dlg-error').hidden = true;
+    $('#btn-confirmar').disabled = false;
+    $('#campo-publicar').hidden = !state.apiOk;
+    actualizarVistaPrevia();
     if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
     form.nombre.focus();
   }
@@ -323,18 +390,48 @@
     if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open');
   }
 
+  function actualizarVistaPrevia() {
+    if (!zonaDonacion) return;
+    const usuario = limpiarUsuario(form.usuario.value);
+    $('#dlg-texto').textContent = textoX(zonaDonacion, usuario, !!usuario && form.etiquetar.checked);
+  }
   form.usuario.addEventListener('input', () => {
     const valido = !!limpiarUsuario(form.usuario.value);
     form.etiquetar.disabled = !valido;
     if (!valido) form.etiquetar.checked = false;
+    actualizarVistaPrevia();
   });
+  form.etiquetar.addEventListener('change', actualizarVistaPrevia);
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!zonaDonacion) return;
     const p = zonaDonacion.properties;
     const usuario = limpiarUsuario(form.usuario.value);
     const etiquetar = !!usuario && form.etiquetar.checked;
+    const publicar = state.apiOk && form.publicar.checked;
+    let texto = textoX(zonaDonacion, usuario, etiquetar);
+    let estadoPost = '';
+    if (state.apiOk) {
+      $('#btn-confirmar').disabled = true;
+      try {
+        const cuerpo = { zona_id: p.id, n_arboles: 1, publicar, etiquetar, handle_x: etiquetar ? usuario : null };
+        const d = await api('/donaciones', { method: 'POST', body: JSON.stringify(cuerpo) });
+        texto = d.texto_propuesto;
+        const c = await api(`/donaciones/${d.id}/confirmar`, { method: 'POST',
+          body: JSON.stringify({ texto_confirmado: d.texto_propuesto, publicar, etiquetar, handle_x: etiquetar ? usuario : null }) });
+        if (c.publicacion && c.publicacion.ok) estadoPost = 'Ya se publicó en la cuenta de Raíz NL.';
+        else if (c.publicacion && c.publicacion.pendiente) estadoPost = 'Tu texto quedó en la cola para publicarse en la cuenta de Raíz NL.';
+        else if (c.publicacion) estadoPost = 'No se pudo publicar en este momento; tu donación sí quedó registrada.';
+        await cargarFichas();
+      } catch (err) {
+        $('#dlg-error').textContent = err.status === 409 ? 'Esta zona ya completó su cupo. Elige otra zona.'
+          : 'No se pudo registrar la donación: ' + err.message;
+        $('#dlg-error').hidden = false;
+        $('#btn-confirmar').disabled = false;
+        return;
+      }
+    }
     guardarCompromiso({
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       zona: p.id, objetivo: p.objetivo, municipio: p.municipio,
@@ -342,12 +439,16 @@
       nombre: form.nombre.value.trim() || null,
       usuario: usuario || null, etiquetar
     });
-    $('#btn-x').href = 'https://x.com/intent/post?text=' + encodeURIComponent(textoX(zonaDonacion, usuario, etiquetar));
+    $('#btn-x').href = 'https://x.com/intent/post?text=' + encodeURIComponent(texto);
     const quien = form.nombre.value.trim();
     $('#gracias-texto').textContent = `${quien ? quien + ', tu' : 'Tu'} árbol quedó registrado en ${p.nombre}. ` +
-      (p.objetivo === 'agua' ? 'Va a ayudar a que el agua se infiltre y llegue a las presas.' : `Va a dar sombra y aire más limpio en ${p.municipio}.`);
+      (p.objetivo === 'agua'
+        ? 'Ayuda a sujetar el suelo y a que el agua se infiltre en una ladera que perdió su cobertura.'
+        : `Da sombra y baja el calor y el polvo cerca de donde la gente de ${p.municipio} respira peor.`) +
+      (estadoPost ? ' ' + estadoPost : '');
     form.hidden = true;
     $('#dlg-gracias').hidden = false;
+    if (state.zonaSel === p.id) pintarTarjeta(zonaDonacion);
     pintarTablero();
   });
   $('#btn-cancelar').addEventListener('click', cerrarDialogo);
@@ -367,6 +468,17 @@
       kpi(fmt(r.zonas_aire != null ? r.zonas_aire : zonasDe('aire').length), 'zonas priorizadas 🌬️ aire')
     ].join('');
     const c = leerCompromisos();
+    if (state.apiOk) {
+      api('/resumen').then((res) => {
+        const po = res.por_objetivo || {};
+        $('#kpis-donaciones').innerHTML = [
+          kpi(fmt((po.agua || {}).donados || 0), 'árboles donados 💧 agua'),
+          kpi(fmt((po.aire || {}).donados || 0), 'árboles donados 🌬️ aire'),
+          kpi(fmt(res.plantados || 0), 'plantados')
+        ].concat(res.vivos_12m != null ? [kpi(fmt(res.vivos_12m), 'vivos a 12 meses')] : []).join('');
+        $('#titulo-donaciones').textContent = 'Donaciones registradas';
+      }).catch(() => {});
+    }
     $('#kpis-donaciones').innerHTML = [
       kpi(fmt(c.filter((x) => x.objetivo === 'agua').length), 'árboles para agua'),
       kpi(fmt(c.filter((x) => x.objetivo === 'aire').length), 'árboles para aire')
@@ -400,7 +512,7 @@
   $('#tab-donar').addEventListener('click', () => mostrarTab('donar'));
   $('#tab-tablero').addEventListener('click', () => mostrarTab('tablero'));
 
-  cargarDatos().then(() => {
+  Promise.all([cargarDatos(), cargarFichas()]).then(() => {
     crearContexto();
     pintarTablero();
     setTimeout(() => map.invalidateSize(), 0);

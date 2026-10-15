@@ -313,3 +313,5 @@ button { cursor: pointer; }
 .foot p { margin: 0; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.texto-x { margin: 6px 0 0; padding: 10px 12px; border: 1px solid var(--line, #d0d7de); border-radius: 8px;
+  font-size: 14px; line-height: 1.45; background: var(--bg-soft, #f6f8fa); white-space: pre-wrap; }

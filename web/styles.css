@@ -414,3 +414,13 @@ section[id], main[id] { scroll-margin-top: 16px; }
 }
 .donador-arboles { font-weight: 900; font-size: 18px; white-space: nowrap; }
 .donador-arboles small { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--sky); letter-spacing: 0.5px; }
+
+/* Mapa e indicadores dentro de «Dónde plantamos» */
+.mapa-indicadores { max-width: 1200px; margin: 48px auto 0; padding: 0 16px; }
+.titulo-mapa { font-size: clamp(22px, 3vw, 30px); font-weight: 900; color: var(--white); text-align: center; margin: 0 0 16px; }
+.mapa-indicadores iframe {
+  display: block; width: 100%; height: 760px; border: 0; border-radius: var(--radius);
+  box-shadow: var(--shadow); background: var(--gray-1); margin-top: 12px;
+}
+.mapa-completo { display: inline-block; margin-top: 12px; font-weight: 700; color: var(--fern); }
+@media (max-width: 860px) { .mapa-indicadores iframe { height: 1150px; } }

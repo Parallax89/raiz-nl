@@ -18,6 +18,9 @@
     return ['localhost', '127.0.0.1'].includes(location.hostname) ? 'http://127.0.0.1:8001' : null;
   })();
 
+  // Incrustado en «Dónde plantamos» (index.html): sin barra superior y los enlaces abren en la página principal
+  const EMBEBIDO = new URLSearchParams(location.search).has('embebido');
+  if (EMBEBIDO) document.documentElement.classList.add('embebido');
   const $ = (s) => document.querySelector(s);
   const fmt = (n, d) => (n == null || !isFinite(n)) ? '—'
     : Number(n).toLocaleString('es-MX', { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 });
@@ -54,7 +57,7 @@
   const map = L.map('mapa', { preferCanvas: true }).setView([25.05, -100.05], 8);
   const bases = window.raizBases(L);
   bases['Mapa'].addTo(map);
-  L.control.layers(bases, null, { position: 'topright' }).addTo(map);
+  L.control.layers(bases, null, { position: 'bottomleft' }).addTo(map);   // arriba a la derecha va el cuadro de capas
   const conMapTiler = !!(window.RAIZ_CONFIG || {}).maptilerKey;
   map.createPane('fondo').style.zIndex = 350;      // acuíferos, colonias y cuencas debajo de todo
   map.createPane('etiquetas').style.zIndex = 450;
@@ -71,7 +74,7 @@
     const prioridad = p.score != null ? `Prioridad ${fmt(p.score)}/100 · ` : '';
     return `<h3>${esc(p.nombre)}</h3>
       <div class="meta">${prioridad}${p.objetivo === 'agua' ? 'Agua' : 'Aire'} · ${esc(p.id)}</div>
-      <ul>${razones}</ul><a href="index.html#donde">Donar un árbol aquí →</a>`;
+      <ul>${razones}</ul><a href="index.html#donar" target="_top">Donar un árbol aquí →</a>`;
   }
 
   function capaZonas(objetivo) {

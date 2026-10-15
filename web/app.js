@@ -49,7 +49,8 @@
     contexto: {},
     memoria: [],
     apiOk: false,
-    fichas: new Map()
+    fichas: new Map(),
+    arboles: 20
   };
 
   const $ = (sel) => document.querySelector(sel);
@@ -139,6 +140,18 @@
     const lista = leerCompromisos().concat([c]);
     state.memoria = lista;
     try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lista)); } catch (e) { /* sin storage: queda en memoria */ }
+    document.dispatchEvent(new CustomEvent('raiznl:compromiso', { detail: lista }));
+  }
+  function arbolesDe(c) {
+    const n = parseInt(c && c.arboles, 10);
+    return n > 0 ? n : 1;
+  }
+  function normArboles(v) {
+    const n = parseInt(v, 10);
+    return n > 0 ? Math.min(n, 10000) : 1;
+  }
+  function textoArboles(n) {
+    return n === 1 ? 'un árbol' : `${fmt(n)} árboles`;
   }
 
   /* ---------- Mapa ---------- */
@@ -346,25 +359,26 @@
   }
 
   // Plantillas de Contexto_Arbol.md. Con API, el texto lo arma el backend (backend/app/textos.py).
-  function textoLocal(p) {
+  function textoLocal(p, n) {
+    const donaron = 'Donaron ' + textoArboles(n || 1);
     const corto = String(p.nombre).split('·').pop().split('→')[0].trim();
     const todo = [p.nombre].concat(p.razones || []).join(' ; ');
     if (p.objetivo === 'agua') {
       const presa = (todo.match(/presa\s+(El Cuchillo|La Boca|Cerro Prieto)/i) || [])[1];
       const acuifero = (todo.match(/acuífero en déficit:\s*([^;.,]+)/i) || [])[1];
-      if (presa) return `Donaron un árbol para restaurar ${corto}, cuenca que aporta a ${presa}.`;
-      if (acuifero) return `Donaron un árbol para restaurar ${corto}, zona de recarga del acuífero ${acuifero.trim()}.`;
-      return `Donaron un árbol para restaurar ${corto}.`;
+      if (presa) return `${donaron} para restaurar ${corto}, cuenca que aporta a ${presa}.`;
+      if (acuifero) return `${donaron} para restaurar ${corto}, zona de recarga del acuífero ${acuifero.trim()}.`;
+      return `${donaron} para restaurar ${corto}.`;
     }
     const est = (todo.match(/estación\s+([A-ZÁÉÍÓÚÑ0-9 ]+?)(?:\)|$|\s*·|,)/) || [])[1];
     const lugar = est
       ? `los alrededores de la estación ${est.trim().toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase())} del SIMA`
       : corto;
-    return `Donaron un árbol para arbolado en ${lugar}, una zona de ${p.municipio} con poca sombra y mala calidad del aire.`;
+    return `${donaron} para arbolado en ${lugar}, una zona de ${p.municipio} con poca sombra y mala calidad del aire.`;
   }
-  function textoX(f, usuario, etiquetar) {
+  function textoX(f, usuario, etiquetar, n) {
     const z = state.apiOk ? state.fichas.get(f.properties.id) : null;
-    const base = (z && z.texto_ejemplo) || textoLocal(f.properties);
+    const base = (z && (n || 1) === 1 && z.texto_ejemplo) || textoLocal(f.properties, n);
     return base + (etiquetar && usuario ? ' @' + usuario : '');
   }
 
@@ -375,6 +389,8 @@
   function abrirDonacion(f) {
     zonaDonacion = f;
     form.reset();
+    const ficha = state.apiOk ? state.fichas.get(f.properties.id) : null;
+    form.arboles.value = ficha && ficha.arboles_disponibles > 0 ? Math.min(state.arboles, ficha.arboles_disponibles) : state.arboles;
     form.etiquetar.disabled = true;
     form.hidden = false;
     $('#dlg-gracias').hidden = true;
@@ -393,7 +409,8 @@
   function actualizarVistaPrevia() {
     if (!zonaDonacion) return;
     const usuario = limpiarUsuario(form.usuario.value);
-    $('#dlg-texto').textContent = textoX(zonaDonacion, usuario, !!usuario && form.etiquetar.checked);
+    $('#dlg-titulo').textContent = 'Donar ' + textoArboles(normArboles(form.arboles.value));
+    $('#dlg-texto').textContent = textoX(zonaDonacion, usuario, !!usuario && form.etiquetar.checked, normArboles(form.arboles.value));
   }
   form.usuario.addEventListener('input', () => {
     const valido = !!limpiarUsuario(form.usuario.value);
@@ -402,6 +419,7 @@
     actualizarVistaPrevia();
   });
   form.etiquetar.addEventListener('change', actualizarVistaPrevia);
+  form.arboles.addEventListener('input', actualizarVistaPrevia);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -410,12 +428,13 @@
     const usuario = limpiarUsuario(form.usuario.value);
     const etiquetar = !!usuario && form.etiquetar.checked;
     const publicar = state.apiOk && form.publicar.checked;
-    let texto = textoX(zonaDonacion, usuario, etiquetar);
+    const arboles = normArboles(form.arboles.value);
+    let texto = textoX(zonaDonacion, usuario, etiquetar, arboles);
     let estadoPost = '';
     if (state.apiOk) {
       $('#btn-confirmar').disabled = true;
       try {
-        const cuerpo = { zona_id: p.id, n_arboles: 1, publicar, etiquetar, handle_x: etiquetar ? usuario : null };
+        const cuerpo = { zona_id: p.id, n_arboles: arboles, publicar, etiquetar, handle_x: etiquetar ? usuario : null };
         const d = await api('/donaciones', { method: 'POST', body: JSON.stringify(cuerpo) });
         texto = d.texto_propuesto;
         const c = await api(`/donaciones/${d.id}/confirmar`, { method: 'POST',
@@ -437,15 +456,19 @@
       zona: p.id, objetivo: p.objetivo, municipio: p.municipio,
       fecha: new Date().toISOString(),
       nombre: form.nombre.value.trim() || null,
+      mensaje: form.mensaje.value.trim() || null,
+      arboles, zona_nombre: p.nombre,
       usuario: usuario || null, etiquetar
     });
     $('#btn-x').href = 'https://x.com/intent/post?text=' + encodeURIComponent(texto);
     const quien = form.nombre.value.trim();
-    $('#gracias-texto').textContent = `${quien ? quien + ', tu' : 'Tu'} árbol quedó registrado en ${p.nombre}. ` +
+    const plural = arboles > 1;
+    const gracias = `${quien ? quien + ', ' : ''}${plural ? 'tus ' + textoArboles(arboles) + ' quedaron registrados' : 'tu árbol quedó registrado'} en ${p.nombre}. ` +
       (p.objetivo === 'agua'
-        ? 'Ayuda a sujetar el suelo y a que el agua se infiltre en una ladera que perdió su cobertura.'
-        : `Da sombra y baja el calor y el polvo cerca de donde la gente de ${p.municipio} respira peor.`) +
+        ? `${plural ? 'Ayudan' : 'Ayuda'} a sujetar el suelo y a que el agua se infiltre en una ladera que perdió su cobertura.`
+        : `${plural ? 'Dan' : 'Da'} sombra y ${plural ? 'bajan' : 'baja'} el calor y el polvo cerca de donde la gente de ${p.municipio} respira peor.`) +
       (estadoPost ? ' ' + estadoPost : '');
+    $('#gracias-texto').textContent = gracias.charAt(0).toUpperCase() + gracias.slice(1);
     form.hidden = true;
     $('#dlg-gracias').hidden = false;
     if (state.zonaSel === p.id) pintarTarjeta(zonaDonacion);
@@ -480,8 +503,8 @@
       }).catch(() => {});
     }
     $('#kpis-donaciones').innerHTML = [
-      kpi(fmt(c.filter((x) => x.objetivo === 'agua').length), 'árboles para agua'),
-      kpi(fmt(c.filter((x) => x.objetivo === 'aire').length), 'árboles para aire')
+      kpi(fmt(c.filter((x) => x.objetivo === 'agua').reduce((s, x) => s + arbolesDe(x), 0)), 'árboles para agua'),
+      kpi(fmt(c.filter((x) => x.objetivo === 'aire').reduce((s, x) => s + arbolesDe(x), 0)), 'árboles para aire')
     ].join('');
     $('#fuentes').innerHTML = (r.fuentes || []).map((s) =>
       `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.nombre)}</a>${s.fecha ? ' · ' + esc(s.fecha) : ''}</li>`).join('') ||
@@ -510,6 +533,28 @@
     if (state.capaZonas && state.capaZonas.getLayers().length) map.fitBounds(state.capaZonas.getBounds(), { padding: [30, 30], maxZoom: 12 });
   });
   $('#tab-donar').addEventListener('click', () => mostrarTab('donar'));
+
+  /* Tarjeta "Únete": objetivo y número de árboles, luego al mapa */
+  let objetivoCard = 'agua';
+  $$('[data-card-objetivo]').forEach((b) => b.addEventListener('click', () => {
+    objetivoCard = b.dataset.cardObjetivo;
+    $$('[data-card-objetivo]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  $$('.monto').forEach((b) => b.addEventListener('click', () => {
+    state.arboles = normArboles(b.dataset.arboles);
+    $('#monto-otro').value = '';
+    $$('.monto').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  $('#monto-otro').addEventListener('input', (e) => {
+    if (!e.target.value) return;
+    state.arboles = normArboles(e.target.value);
+    $$('.monto').forEach((x) => x.setAttribute('aria-pressed', String(Number(x.dataset.arboles) === state.arboles)));
+  });
+  $('#btn-siguiente').addEventListener('click', () => {
+    seleccionarObjetivo(objetivoCard);
+    $('#donde').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => map.invalidateSize(), 400);
+  });
   $('#tab-tablero').addEventListener('click', () => mostrarTab('tablero'));
 
   Promise.all([cargarDatos(), cargarFichas()]).then(() => {

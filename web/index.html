@@ -5,110 +5,218 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Raíz NL</title>
   <meta name="description" content="Dona un árbol donde más ayuda: agua para las presas o aire para la zona metropolitana de Monterrey.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="promo">🌳 Grok Monterrey Build Day · prototipo: tu árbol, donde más ayuda a Monterrey</div>
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true">🌳</span>
-      <span class="brand-name">Raíz NL</span>
+  <a class="banner" href="#donde">🌳💧 Grok Monterrey Build Day: tu árbol, donde más ayuda a Monterrey <b>Ver dónde plantamos →</b></a>
+
+  <header class="hero" id="inicio">
+    <nav class="nav" aria-label="Principal">
+      <a class="logo" href="#inicio">#RAÍZNL</a>
       <span id="mock-badge" class="badge" hidden>datos de ejemplo</span>
-    </div>
-    <nav class="tabs" role="tablist" aria-label="Secciones">
-      <button class="tab" role="tab" id="tab-donar" aria-selected="true" aria-controls="panel-donar">Donar</button>
-      <button class="tab" role="tab" id="tab-tablero" aria-selected="false" aria-controls="panel-tablero">Tablero</button>
+      <ul class="nav-links">
+        <li><a href="#unete">Únete</a></li>
+        <li><a href="#ranking">Ranking</a></li>
+        <li><a href="#donde">Dónde plantamos</a></li>
+        <li><a href="#impacto">Impacto</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a class="nav-cta" href="#unete">Planta un árbol</a>
     </nav>
+
+    <div class="hero-body">
+      <p class="hero-with">Monterrey, Nuevo León · agua y aire</p>
+      <h1 class="sr">Raíz NL</h1>
+      <p class="hero-count"><span id="contador" aria-live="polite">0</span></p>
+      <p class="hero-label">Árboles comprometidos, gracias a ti</p>
+      <p class="hero-lead">Juntos, #RaízNL planta donde más rinde: en la sierra que alimenta las presas y en las colonias que respiran el peor aire.</p>
+      <a class="hero-link" href="#impacto">Ver nuestro impacto</a>
+    </div>
+
+    <svg class="hero-hills" viewBox="0 0 1440 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <path fill="#1d4a70" d="M0 150 L120 90 L230 140 L360 60 L480 130 L600 80 L740 150 L860 70 L990 140 L1110 85 L1240 140 L1360 95 L1440 120 V260 H0Z"/>
+      <path fill="#196d4a" d="M0 190 C180 140 320 200 520 165 C720 130 860 200 1060 170 C1240 145 1340 185 1440 170 V260 H0Z"/>
+      <g fill="#427236">
+        <path d="M90 200 l22 -60 l22 60z"/><path d="M130 205 l16 -44 l16 44z"/>
+        <path d="M330 195 l20 -54 l20 54z"/><path d="M610 185 l24 -66 l24 66z"/><path d="M650 192 l16 -44 l16 44z"/>
+        <path d="M930 196 l22 -60 l22 60z"/><path d="M1180 190 l24 -64 l24 64z"/><path d="M1222 196 l15 -40 l15 40z"/>
+      </g>
+      <path fill="#2f5a2a" d="M0 225 C240 200 420 240 720 222 C1000 205 1200 238 1440 220 V260 H0Z"/>
+    </svg>
   </header>
 
-  <section class="landing" aria-labelledby="landing-titulo">
-    <h1 id="landing-titulo" class="sr">Raíz NL</h1>
-    <p class="landing-eyebrow">Monterrey, Nuevo León</p>
-    <p class="landing-count"><span id="contador" aria-live="polite">0</span></p>
-    <p class="landing-label">árboles comprometidos en este navegador</p>
-    <p class="landing-lead">Dona un árbol donde más rinde: para el agua de las presas o para el aire que respira la zona metropolitana.</p>
-    <a class="landing-cta" href="#donar">Plantar mi árbol</a>
-    <div class="stats" id="stats-landing">
-      <div class="stat"><span aria-hidden="true">🔥</span><b id="st-ha">–</b><small>hectáreas quemadas en Nuevo León (2005-2023)</small></div>
-      <div class="stat"><span aria-hidden="true">💧</span><b id="st-agua">–</b><small>zonas priorizadas para agua</small></div>
-      <div class="stat"><span aria-hidden="true">🌬️</span><b id="st-aire">–</b><small>zonas priorizadas para aire</small></div>
+  <section class="unete" id="unete" aria-labelledby="unete-titulo">
+    <div class="card-donar">
+      <h2 id="unete-titulo">¡Únete a #RaízNL!</h2>
+      <p class="card-sub">1 compromiso = 1 árbol</p>
+      <div class="card-objetivo" role="group" aria-label="¿Para qué sirve tu árbol?">
+        <button type="button" class="obj-btn" data-card-objetivo="agua" aria-pressed="true">💧 Agua</button>
+        <button type="button" class="obj-btn" data-card-objetivo="aire" aria-pressed="false">🌬️ Aire</button>
+      </div>
+      <div class="montos" role="group" aria-label="Número de árboles">
+        <button type="button" class="monto" data-arboles="5" aria-pressed="false">5 árboles</button>
+        <button type="button" class="monto" data-arboles="20" aria-pressed="true">20 árboles</button>
+        <button type="button" class="monto" data-arboles="50" aria-pressed="false">50 árboles</button>
+        <button type="button" class="monto" data-arboles="100" aria-pressed="false">100 árboles</button>
+      </div>
+      <label class="monto-otro">Otra cantidad
+        <input type="number" id="monto-otro" min="1" max="10000" step="1" inputmode="numeric" placeholder="1">
+      </label>
+      <button type="button" class="pill pill-ancho" id="btn-siguiente">Siguiente: elige la zona</button>
+      <p class="card-nota">Prototipo: registramos tu compromiso, todavía no hay cobro.</p>
     </div>
   </section>
 
-  <main class="layout" id="donar">
-    <aside class="panel">
-      <section id="panel-donar" role="tabpanel" aria-labelledby="tab-donar">
-        <div class="objetivo-switch" role="group" aria-label="Objetivo del árbol" hidden id="objetivo-switch">
-          <button class="seg" data-objetivo="agua" aria-pressed="false">💧 Agua</button>
-          <button class="seg" data-objetivo="aire" aria-pressed="false">🌬️ Aire</button>
-        </div>
+  <section class="ranking" id="ranking" aria-labelledby="ranking-titulo">
+    <h2 id="ranking-titulo" class="titulo-xl">Ranking</h2>
+    <div class="rank-tabs" role="tablist" aria-label="Orden del ranking">
+      <button class="rank-tab" role="tab" aria-selected="true" data-orden="recientes">Más recientes</button>
+      <button class="rank-tab" role="tab" aria-selected="false" data-orden="arboles">Más árboles</button>
+    </div>
+    <ol class="rank-lista" id="rank-lista"></ol>
+    <p class="rank-nota">Prototipo: el ranking muestra los compromisos hechos en este navegador.</p>
+  </section>
 
-        <div id="vista-intro" class="intro-panel">
-          <h1>Tu árbol, donde más ayuda</h1>
-          <p>Elige en el mapa para qué quieres que sirva tu árbol. Te mostramos las zonas que priorizamos con datos abiertos de incendios, cuencas, presas y calidad del aire.</p>
-        </div>
+  <section class="impacto" id="impacto" aria-labelledby="impacto-titulo">
+    <h2 id="impacto-titulo" class="titulo-xl">Impacto que da forma a Monterrey</h2>
+    <div class="impacto-grid">
+      <div class="imp"><span aria-hidden="true">🔥</span><b id="st-ha">–</b><small>hectáreas quemadas en Nuevo León (2005-2023)</small></div>
+      <div class="imp"><span aria-hidden="true">🌲</span><b id="st-incendios">–</b><small>incendios forestales registrados</small></div>
+      <div class="imp"><span aria-hidden="true">💧</span><b id="st-agua">–</b><small>zonas priorizadas para agua</small></div>
+      <div class="imp"><span aria-hidden="true">🌬️</span><b id="st-aire">–</b><small>zonas priorizadas para aire</small></div>
+    </div>
+  </section>
 
-        <div id="vista-lista" hidden>
-          <p id="lista-nota" class="nota"></p>
-          <ol id="lista-zonas" class="lista-zonas"></ol>
-        </div>
+  <section class="donde" id="donde" aria-labelledby="donde-titulo">
+    <h2 id="donde-titulo" class="titulo-xl">Dónde plantamos</h2>
+    <p class="donde-lead">Priorizamos zonas con datos abiertos de incendios, cuencas, presas y calidad del aire. Elige una y dona ahí.</p>
 
-        <div id="vista-zona" hidden>
-          <button class="link-btn" id="btn-volver">← Ver todas las zonas</button>
-          <article id="zona-card" class="zona-card" aria-live="polite"></article>
-        </div>
-      </section>
+    <main class="layout" id="donar">
+      <aside class="panel">
+        <nav class="tabs" role="tablist" aria-label="Secciones">
+          <button class="tab" role="tab" id="tab-donar" aria-selected="true" aria-controls="panel-donar">Zonas</button>
+          <button class="tab" role="tab" id="tab-tablero" aria-selected="false" aria-controls="panel-tablero">Tablero</button>
+        </nav>
+        <section id="panel-donar" role="tabpanel" aria-labelledby="tab-donar">
+          <div class="objetivo-switch" role="group" aria-label="Objetivo del árbol" hidden id="objetivo-switch">
+            <button class="seg" data-objetivo="agua" aria-pressed="false">💧 Agua</button>
+            <button class="seg" data-objetivo="aire" aria-pressed="false">🌬️ Aire</button>
+          </div>
 
-      <section id="panel-tablero" role="tabpanel" aria-labelledby="tab-tablero" hidden>
-        <h2>Tablero</h2>
-        <div class="kpis" id="kpis"></div>
-        <h3 id="titulo-donaciones">Compromisos en este navegador</h3>
-        <div class="kpis" id="kpis-donaciones"></div>
-        <p class="nota">Prototipo: los compromisos se guardan solo en tu navegador. No hay pagos.</p>
-        <h3>Capas de contexto</h3>
-        <fieldset class="capas">
-          <legend class="sr">Capas de contexto</legend>
-          <label><input type="checkbox" data-capa="incendios"> Incendios forestales</label>
-          <label><input type="checkbox" data-capa="presas" checked> Presas (% de llenado)</label>
-          <label><input type="checkbox" data-capa="estaciones"> Estaciones SIMA (PM10)</label>
-          <label><input type="checkbox" data-capa="cuencas"> Cuencas hacia las presas</label>
-        </fieldset>
-        <h3>Fuentes de datos</h3>
-        <ul class="fuentes" id="fuentes"></ul>
-        <p class="nota" id="generado"></p>
-      </section>
-    </aside>
+          <div id="vista-intro" class="intro-panel">
+            <h3 class="panel-h">Tu árbol, donde más ayuda</h3>
+            <p>Elige en el mapa para qué quieres que sirva tu árbol. Te mostramos las zonas que priorizamos con datos abiertos de incendios, cuencas, presas y calidad del aire.</p>
+          </div>
 
-    <div class="map-wrap">
-      <div id="map" aria-label="Mapa de zonas priorizadas"></div>
+          <div id="vista-lista" hidden>
+            <p id="lista-nota" class="nota"></p>
+            <ol id="lista-zonas" class="lista-zonas"></ol>
+          </div>
 
-      <div id="hero" class="hero">
-        <div class="hero-card">
-          <h1>¿Para qué quieres que sirva tu árbol?</h1>
-          <div class="hero-options">
-            <button class="hero-btn agua" data-objetivo="agua">
-              <span class="hero-emoji" aria-hidden="true">💧</span>
-              <span class="hero-title">Agua</span>
-              <span class="hero-desc">Reforestar cicatrices de incendio en la sierra que alimenta las presas y los acuíferos.</span>
-            </button>
-            <button class="hero-btn aire" data-objetivo="aire">
-              <span class="hero-emoji" aria-hidden="true">🌬️</span>
-              <span class="hero-title">Aire</span>
-              <span class="hero-desc">Plantar donde la zona metropolitana respira peor y casi no hay árboles.</span>
-            </button>
+          <div id="vista-zona" hidden>
+            <button class="link-btn" id="btn-volver">← Ver todas las zonas</button>
+            <article id="zona-card" class="zona-card" aria-live="polite"></article>
+          </div>
+        </section>
+
+        <section id="panel-tablero" role="tabpanel" aria-labelledby="tab-tablero" hidden>
+          <h3 class="panel-h">Tablero</h3>
+          <div class="kpis" id="kpis"></div>
+          <h4 id="titulo-donaciones">Compromisos en este navegador</h4>
+          <div class="kpis" id="kpis-donaciones"></div>
+          <p class="nota">Prototipo: los compromisos se guardan solo en tu navegador. No hay pagos.</p>
+          <h4>Capas de contexto</h4>
+          <fieldset class="capas">
+            <legend class="sr">Capas de contexto</legend>
+            <label><input type="checkbox" data-capa="incendios"> Incendios forestales</label>
+            <label><input type="checkbox" data-capa="presas" checked> Presas (% de llenado)</label>
+            <label><input type="checkbox" data-capa="estaciones"> Estaciones SIMA (PM10)</label>
+            <label><input type="checkbox" data-capa="cuencas"> Cuencas hacia las presas</label>
+          </fieldset>
+          <h4>Fuentes de datos</h4>
+          <ul class="fuentes" id="fuentes"></ul>
+          <p class="nota" id="generado"></p>
+        </section>
+      </aside>
+
+      <div class="map-wrap">
+        <div id="map" aria-label="Mapa de zonas priorizadas"></div>
+
+        <div id="hero" class="map-hero">
+          <div class="map-hero-card">
+            <h3>¿Para qué quieres que sirva tu árbol?</h3>
+            <div class="hero-options">
+              <button class="hero-btn agua" data-objetivo="agua">
+                <span class="hero-emoji" aria-hidden="true">💧</span>
+                <span class="hero-title">Agua</span>
+                <span class="hero-desc">Reforestar cicatrices de incendio en la sierra que alimenta las presas y los acuíferos.</span>
+              </button>
+              <button class="hero-btn aire" data-objetivo="aire">
+                <span class="hero-emoji" aria-hidden="true">🌬️</span>
+                <span class="hero-title">Aire</span>
+                <span class="hero-desc">Plantar donde la zona metropolitana respira peor y casi no hay árboles.</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </main>
+  </section>
+
+  <section class="diferencia" aria-labelledby="dif-titulo">
+    <h2 id="dif-titulo" class="titulo-xl">¿Quieres hacer la diferencia?</h2>
+    <p>Comprométete con un árbol y pide a 3 amigos que se unan a #RaízNL.</p>
+    <div class="dif-acciones">
+      <a class="pill" href="#unete">Plantar mi árbol</a>
+      <a class="pill pill-blanco" id="btn-x-general" href="https://x.com/intent/post?text=Me%20un%C3%AD%20a%20%23Ra%C3%ADzNL%3A%20%C3%A1rboles%20donde%20m%C3%A1s%20ayudan%20al%20agua%20y%20al%20aire%20de%20Monterrey%20%F0%9F%8C%B3" target="_blank" rel="noopener">Compartir en X</a>
     </div>
-  </main>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-titulo">
+    <h2 id="faq-titulo" class="titulo-xl">FAQ</h2>
+    <details>
+      <summary>¿Ya se cobra mi donación?</summary>
+      <p>No. Esto es un prototipo del Grok Monterrey Build Day: registramos tu compromiso en tu navegador y todavía no hay pagos.</p>
+    </details>
+    <details>
+      <summary>¿Cómo eligen las zonas?</summary>
+      <p>Cruzamos datos abiertos de incendios forestales, cuencas que escurren hacia las presas, llenado de presas (CONAGUA) y calidad del aire (SIMA Nuevo León). Cada zona tiene una prioridad de 0 a 100 y las razones a la vista.</p>
+    </details>
+    <details>
+      <summary>¿Qué diferencia hay entre agua y aire?</summary>
+      <p>Agua: reforestar cicatrices de incendio en la sierra para que el agua se infiltre y llegue a las presas y acuíferos. Aire: plantar en colonias de la zona metropolitana con mala calidad del aire y poca sombra.</p>
+    </details>
+    <details>
+      <summary>¿Un árbol limpia el aire de toda la ciudad?</summary>
+      <p>No. Un árbol ayuda donde está: da sombra y mejora el aire alrededor. Por eso lo plantamos donde la gente respira peor.</p>
+    </details>
+    <details>
+      <summary>¿Publicar en X es automático?</summary>
+      <p>No. El botón abre X con un texto listo; tú decides si lo publicas.</p>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <a class="logo" href="#inicio">#RAÍZNL</a>
+    <p>Datos abiertos de CONAGUA y SIMA Nuevo León · Prototipo sin pagos.</p>
+  </footer>
 
   <dialog id="dlg-donar" class="dlg" aria-labelledby="dlg-titulo">
     <form id="form-donar" method="dialog">
       <h2 id="dlg-titulo">Donar un árbol</h2>
       <p id="dlg-zona" class="nota"></p>
-      <label class="campo">Nombre (opcional)
+      <label class="campo">Árboles
+        <input type="number" name="arboles" min="1" max="10000" step="1" value="1" inputmode="numeric" required>
+      </label>
+      <label class="campo">Nombre para el ranking (opcional)
         <input type="text" name="nombre" maxlength="60" autocomplete="name">
+      </label>
+      <label class="campo">Mensaje (opcional)
+        <input type="text" name="mensaje" maxlength="80" autocomplete="off">
       </label>
       <label class="campo">Usuario de X (opcional)
         <span class="input-prefijo"><span aria-hidden="true">@</span><input type="text" name="usuario" maxlength="16" autocomplete="off" pattern="@?[A-Za-z0-9_]{1,15}" inputmode="text"></span>
@@ -131,7 +239,7 @@
     <div id="dlg-gracias" hidden>
       <h2>¡Gracias! 🌳</h2>
       <p id="gracias-texto"></p>
-      <p class="nota">Prototipo: registramos tu donación simbólica, todavía no hay cobro. «Publicar en X» abre tu cuenta con el mismo texto; tú decides si lo publicas.</p>
+      <p class="nota">Ya eres parte de #RaízNL. Prototipo: registramos tu donación simbólica, todavía no hay cobro. «Publicar en X» abre tu cuenta con el mismo texto; tú decides si lo publicas.</p>
       <div class="dlg-acciones">
         <button type="button" class="btn-sec" id="btn-cerrar">Cerrar</button>
         <a class="btn-pri" id="btn-x" href="#" target="_blank" rel="noopener">Publicar en X</a>
@@ -140,9 +248,6 @@
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <footer class="foot">
-    <p>Raíz NL · Datos abiertos de CONAGUA y SIMA Nuevo León · Prototipo sin pagos.</p>
-  </footer>
   <script src="app.js"></script>
   <script src="landing.js"></script>
 </body>

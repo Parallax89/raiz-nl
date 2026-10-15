@@ -468,3 +468,11 @@ section[id], main[id] { scroll-margin-top: 16px; }
 #share-card { width: 100%; height: auto; border-radius: 8px; display: block; box-shadow: 0 2px 8px rgba(8, 24, 44, 0.15); }
 .share-acciones { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .share-acciones .btn-sec { flex: 1; }
+
+/* Ejemplos y logos en el ranking */
+.tag-ejemplo { display: inline-block; vertical-align: middle; margin-left: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--muted); background: var(--gray-1); border: 1px solid var(--gray-2); border-radius: 4px; padding: 1px 5px; }
+.rank-logo { object-fit: contain; background: var(--white); border: 1px solid var(--gray-2); padding: 4px; }
+.rank-medalla { margin-right: 2px; }
+.chip-equipo { display: inline-flex; align-items: center; gap: 6px; }
+.chip-equipo img { width: 22px; height: 22px; border-radius: 50%; object-fit: contain; background: var(--white); }

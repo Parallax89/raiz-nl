@@ -28,3 +28,13 @@ window.raizBases = function (L) {
     })
   };
 };
+
+// Logos de equipos (demo, sin afiliación). Llave: nombre del equipo en minúsculas.
+window.RAIZ_LOGOS = {
+  'tec de monterrey': 'img/equipos/tec.jpg', 'tec': 'img/equipos/tec.jpg',
+  'udem': 'img/equipos/udem.png', 'universidad de monterrey': 'img/equipos/udem.png',
+  'uanl': 'img/equipos/uanl.png'
+};
+window.raizLogo = function (nombre) {
+  return (window.RAIZ_LOGOS || {})[String(nombre || '').trim().toLowerCase()] || null;
+};

@@ -60,7 +60,7 @@
     const todos = lista.concat(SUGERIDOS.filter((s) => !lista.some((x) => x.toLowerCase() === s.toLowerCase())));
     $('#equipos-lista').innerHTML = todos.map((t) => `<option value="${t.replace(/"/g, '&quot;')}">`).join('');
     $('#equipos-sugeridos').innerHTML = todos.slice(0, 6).map((t) =>
-      `<button type="button" class="chip-equipo" aria-pressed="${t === actual}">${t.replace(/[<>&]/g, '')}</button>`).join('');
+      `<button type="button" class="chip-equipo" aria-pressed="${t === actual}">${window.raizLogo && window.raizLogo(t) ? `<img src="${window.raizLogo(t)}" alt="">` : ''}<span>${t.replace(/[<>&]/g, '')}</span></button>`).join('');
     $('#equipo-actual').innerHTML = actual
       ? `Estás en el equipo <b>${actual.replace(/[<>&]/g, '')}</b>: tus donaciones suman para él. <button type="button" class="link-btn" id="btn-salir-equipo">Salir</button>`
       : '';
@@ -79,7 +79,7 @@
   $('#form-equipo').addEventListener('submit', (e) => { e.preventDefault(); unirse($('#equipo-nombre').value); });
   $('#equipos-sugeridos').addEventListener('click', (e) => {
     const b = e.target.closest('.chip-equipo');
-    if (b) unirse(b.textContent);
+    if (b) unirse(b.querySelector('span').textContent);
   });
   document.addEventListener('raiznl:compromiso', pintarEquipos);
   pintarEquipos();

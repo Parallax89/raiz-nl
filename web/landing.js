@@ -35,6 +35,24 @@
   }
 
   /* Ranking */
+  /* Ejemplos para el demo: se muestran en el ranking marcados como «ejemplo» y no cuentan en el contador */
+  var EJEMPLOS_RANKING = [
+    { nombre: 'Mariana T.', mensaje: '¡Por la sierra que nos da agua!', arboles: 120, objetivo: 'agua', equipo: 'Tec de Monterrey', municipio_donador: 'Monterrey', zona_nombre: 'Santiago · ladera quemada que drena a La Boca', fecha: '2026-10-14T19:05:00Z' },
+    { nombre: 'Equipo Tigres Verdes', mensaje: 'Somos UANL 🐯', arboles: 200, objetivo: 'agua', equipo: 'UANL', municipio_donador: 'San Nicolás de los Garza', zona_nombre: 'Montemorelos · una ladera quemada cerca de Rayones', fecha: '2026-10-14T18:40:00Z' },
+    { nombre: 'Sofía R.', mensaje: 'Sombra para García', arboles: 50, objetivo: 'aire', equipo: 'UDEM', municipio_donador: 'San Pedro Garza García', zona_nombre: 'García · alrededor de estación NOROESTE 2', fecha: '2026-10-14T18:22:00Z' },
+    { nombre: 'Don Chuy', mensaje: 'Para mis nietos', arboles: 20, objetivo: 'aire', municipio_donador: 'Guadalupe', zona_nombre: 'Guadalupe · alrededor de estación SURESTE', fecha: '2026-10-14T17:58:00Z' },
+    { nombre: 'Andrea G.', arboles: 75, objetivo: 'agua', equipo: 'Tec de Monterrey', municipio_donador: 'San Pedro Garza García', zona_nombre: 'Galeana · ladera quemada en la Sierra Madre', fecha: '2026-10-14T17:31:00Z' },
+    { nombre: 'Luis P.', mensaje: 'Viva Pesquería', arboles: 30, objetivo: 'aire', equipo: 'UANL', municipio_donador: 'Pesquería', zona_nombre: 'Pesquería · alrededor de estación ESTE', fecha: '2026-10-14T17:10:00Z' },
+    { nombre: 'Familia Garza', arboles: 100, objetivo: 'agua', equipo: 'UDEM', municipio_donador: 'Monterrey', zona_nombre: 'Linares · ladera que aporta a Cerro Prieto', fecha: '2026-10-14T16:45:00Z' },
+    { nombre: 'Karla M.', mensaje: 'Apodaca respira', arboles: 15, objetivo: 'aire', municipio_donador: 'Apodaca', zona_nombre: 'Apodaca · alrededor de estación NORESTE 2', fecha: '2026-10-14T16:20:00Z' },
+    { nombre: 'Rodrigo V.', arboles: 40, objetivo: 'agua', equipo: 'Tec de Monterrey', municipio_donador: 'Santa Catarina', zona_nombre: 'Santa Catarina · cañón con cicatriz de incendio', fecha: '2026-10-14T15:55:00Z' },
+    { nombre: 'Paty E.', mensaje: 'Por el aire de Juárez', arboles: 25, objetivo: 'aire', equipo: 'UANL', municipio_donador: 'Juárez', zona_nombre: 'Juárez · alrededor de estación SURESTE 2', fecha: '2026-10-14T15:30:00Z' },
+    { nombre: 'Memo C.', arboles: 10, objetivo: 'agua', municipio_donador: 'General Escobedo', zona_nombre: 'Santiago · cuenca del río Ramos', fecha: '2026-10-14T15:02:00Z' }
+  ].map(function (c) { c.ejemplo = true; return c; });
+  function conEjemplos(lista) { return lista.concat(EJEMPLOS_RANKING); }
+  function logo(nombre) { return window.raizLogo ? window.raizLogo(nombre) : null; }
+  var TAG_EJEMPLO = ' <span class="tag-ejemplo">ejemplo</span>';
+
   /* Ranking por grupo: municipio de quien dona o equipo */
   function agrupar(lista, clave) {
     var m = {};
@@ -42,9 +60,10 @@
       var t = String(c[clave] || '').trim();
       if (!t) return;
       var k = t.toLowerCase();
-      if (!m[k]) m[k] = { nombre: t, arboles: 0, personas: 0 };
+      if (!m[k]) m[k] = { nombre: t, arboles: 0, personas: 0, reales: 0 };
       m[k].arboles += arboles(c);
       m[k].personas += 1;
+      if (!c.ejemplo) m[k].reales += 1;
     });
     return Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return b.arboles - a.arboles; });
   }
@@ -60,9 +79,10 @@
     var max = grupos[0].arboles;
     ol.innerHTML = grupos.map(function (g, i) {
       var medalla = ['🥇', '🥈', '🥉'][i] || String(i + 1);
+      var img = clave === 'equipo' ? logo(g.nombre) : null;
       return '<li class="rank-item rank-grupo">' +
-        '<span class="rank-icono" aria-hidden="true">' + medalla + '</span>' +
-        '<div class="rank-texto"><div class="rank-nombre">' + esc(g.nombre) + '</div>' +
+        (img ? '<img class="rank-icono rank-logo" src="' + img + '" alt="">' : '<span class="rank-icono" aria-hidden="true">' + (clave === 'equipo' ? '👥' : '📍') + '</span>') +
+        '<div class="rank-texto"><div class="rank-nombre"><span class="rank-medalla">' + medalla + '</span> ' + esc(g.nombre) + (g.reales ? '' : TAG_EJEMPLO) + '</div>' +
         '<span class="rank-barra"><span style="width:' + Math.max(4, Math.round(100 * g.arboles / max)) + '%"></span></span>' +
         '<p class="rank-fecha">' + g.personas + (g.personas === 1 ? ' persona' : ' personas') + '</p></div>' +
         '<span class="rank-arboles">' + g.arboles.toLocaleString('es-MX') + (g.arboles === 1 ? ' árbol' : ' árboles') + '</span></li>';
@@ -70,6 +90,7 @@
   }
 
   function pintarRanking(lista) {
+    lista = conEjemplos(lista);
     if (orden === 'municipios') return pintarGrupos(lista, 'municipio_donador');
     if (orden === 'equipos') return pintarGrupos(lista, 'equipo');
     var items = lista.slice();
@@ -88,7 +109,7 @@
       var donde = [c.equipo ? 'Equipo ' + c.equipo : '', c.zona_nombre || c.municipio || ''].filter(Boolean).join(' · ');
       return '<li class="rank-item">' +
         '<span class="rank-icono" aria-hidden="true">' + (c.objetivo === 'aire' ? '🌬️' : '💧') + '</span>' +
-        '<div class="rank-texto"><div class="rank-nombre">' + esc(nombre) + '</div>' +
+        '<div class="rank-texto"><div class="rank-nombre">' + esc(nombre) + (c.ejemplo ? TAG_EJEMPLO : '') + '</div>' +
         (c.mensaje ? '<p class="rank-mensaje">' + esc(c.mensaje) + '</p>' : '') +
         '<p class="rank-fecha">' + esc([donde, fecha].filter(Boolean).join(' · ')) + '</p></div>' +
         '<span class="rank-arboles">' + n.toLocaleString('es-MX') + (n === 1 ? ' árbol' : ' árboles') + '</span></li>';

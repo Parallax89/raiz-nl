@@ -1,0 +1,30 @@
+# Repo abierto: cualquier PR a main se mergea solo y se publica.
+# Candados: no se ejecuta código del PR y se rechazan cambios a .github/.
+name: Auto-merge
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Rechazar cambios a .github/
+        run: |
+          if gh pr diff "$PR" --name-only | grep -q '^\.github/'; then
+            gh pr comment "$PR" --body "Este PR toca \`.github/\`, así que no se mergea automáticamente. Un mantenedor lo revisará."
+            exit 1
+          fi
+      - name: Mergear
+        run: gh pr merge "$PR" --squash --delete-branch=false
+      # Los merges hechos con GITHUB_TOKEN no disparan el evento push; lanzamos el deploy a mano.
+      - name: Publicar
+        run: gh workflow run deploy.yml --ref main
